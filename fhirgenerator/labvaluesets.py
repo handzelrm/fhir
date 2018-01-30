@@ -1,5 +1,6 @@
 import generatebase
 
+
 class LabValueSets(generatebase.GenerateBase):
     def __init__(self,ResourceType,StructureDefinition):
         """Creates object with resource type and list of LOINC codes"""

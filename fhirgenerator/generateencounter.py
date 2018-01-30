@@ -53,6 +53,7 @@ class GenerateEncounter(generatebase.GenerateBase):
         # self._validate(Encounter)
         self.response = Encounter.create(server=self.connect2server().server)
         Encounter.id = self._extract_id()
+        self.Encounter = Encounter
 
 if __name__ == '__main__':
     GenerateEncounter()

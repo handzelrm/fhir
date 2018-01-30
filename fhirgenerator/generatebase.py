@@ -199,3 +199,35 @@ class GenerateBase():
         name_last = random.choice(name_last_list)
 
         return name_last, [name_first], gender
+
+        
+    def _add_quantity_value(self,Observation,measurement):
+        """
+        Adds a quantity value object to Observation.
+        
+        :param Observation: fhirclient.models.observation.Observation object
+        :param measurement: measurement dictionary
+        :returns: Observation object
+        """       
+        Quantity = q.Quantity()
+        Quantity.value = self.observation_dict[measurement]['value']
+        Quantity.unit = self.observation_dict[measurement]['unit']
+        Observation.valueQuantity = Quantity
+        return Observation
+    
+    def _add_codeable_value(self,Observation,measurement):
+        """
+        Adds a codeableconcept value object to Observation.
+        
+        :param Observation: fhirclient.models.observation.Observation object
+        :param measurement: measurement dictionary
+        :returns: Observation Object
+        """
+        CodeableConcept = cc.CodeableConcept()
+        Coding = c.Coding()
+        Coding.system = 'http://loinc.org'
+        Coding.code = self.observation_dict[measurement]['value_loinc']
+        Coding.display = self.observation_dict[measurement]['value_display']
+        CodeableConcept.coding = [Coding]
+        Observation.valueCodeableConcept = CodeableConcept
+        return Observation

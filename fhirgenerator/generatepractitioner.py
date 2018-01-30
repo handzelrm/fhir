@@ -1,4 +1,5 @@
 import generatebase
+
 import fhirclient.models.codeableconcept as cc
 import fhirclient.models.coding as c
 import fhirclient.models.humanname as hn
@@ -30,6 +31,7 @@ class GeneratePractitioner(generatebase.GenerateBase):
         Practitioner.name = [name]
         self.response = Practitioner.create(server=self.connect2server().server)
         Practitioner.id = self._extract_id()  
+        self.Practitioner = Practitioner
 
 if __name__ == '__main__':
 	GeneratePractitioner()
