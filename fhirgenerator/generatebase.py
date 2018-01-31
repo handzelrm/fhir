@@ -147,6 +147,20 @@ class GenerateBase():
             jdata = json.load(f)
         return jdata
 
+    @staticmethod
+    def json_request(ResourceType,StructureDefinition):
+        """Searches HSPC server v5 to obtain StructuredDefinitions."""
+        r = requests.get(f'https://api-v5-stu3.hspconsortium.org/stu3/open/{ResourceType}?_id={StructureDefinition}&_format=json')
+        return r.json()
+
+    def hard_valueset(self):
+        """Hard coded to all_lab_values.xlsx document."""
+        if self.loinc==None:
+            return None
+        df = pd.read_excel('./fhir/all_lab_values.xlsx')
+        valueset_list = df[df.loinc==self.loinc].value.tolist()        
+        return valueset_list
+
     def dict_search(self,data=None):
         """Recursive function that works in conjuction with list_search.  Hard coded for looking up LOINC codes."""
         if data == None:
@@ -231,3 +245,83 @@ class GenerateBase():
         CodeableConcept.coding = [Coding]
         Observation.valueCodeableConcept = CodeableConcept
         return Observation
+
+    @staticmethod
+    def _generate_vitals():
+        """Generates a set of vitals using a normal distribution times 10"""
+        avg_sbp = 120
+        avg_dbp  = 80
+        diff = int(np.random.normal(0,1)*10)
+        sbp = avg_sbp + diff
+        dbp = avg_dbp + diff
+
+        avg_hr = 80
+        diff = int(np.random.normal(0,1)*10)
+        hr = avg_hr + diff
+        return sbp, dbp, hr
+
+
+    @staticmethod
+    def _generate_height_weight(sex):
+        """Generates height and weight roughly inline with US stats."""
+        avg_height_male = 69.2
+        std_height_male = 4
+        avg_height_female = 63.7
+        std_height_female = 3.5
+        
+        avg_weight_male = 195.7
+        std_weight_male = 30
+        avg_weight_female = 168.5
+        std_weight_female = 25
+        
+        if sex =='unknown':
+            sex = random.choice(['male','female'])
+    
+        if sex == 'male':
+            height = np.random.normal(avg_height_male,std_height_male)
+            weight = np.random.normal(avg_weight_male,std_weight_male)
+        elif sex == 'female':
+            height = np.random.normal(avg_height_female,std_height_female)
+            weight = np.random.normal(avg_weight_female,std_weight_female)            
+        else:
+            raise ValueError('sex error')
+        return height, weight
+
+    @staticmethod
+    def _get_smoking_loinc():
+        """Uses a get request from LOINC to obtain a list of smoking statuses and returns a random one."""
+        df = pd.read_html('https://s.details.loinc.org/LOINC/72166-2.html?sections=Comprehensive')[5]
+        df.columns = df.iloc[3,:]
+        df = df.iloc[4:,[3,5]]
+        df.columns = ['description','loinc']
+        smoke_description = random.choice(df.description.tolist())
+        smoke_loinc = df[df.description==smoke_description].loinc.values[0]
+        return smoke_loinc, smoke_description
+
+    def _get_household_income(self):
+        df = pd.read_html('https://r.details.loinc.org/LOINC/77244-2.html?sections=Comprehensive')[4]
+        df = df.iloc[4:,[3,5]]
+        df.columns = ['income_range','answer_id']
+        self.income_range = random.choice(df.income_range.tolist())
+        self.income_loinc = df[df.income_range == self.income_range].answer_id.values[0]
+        
+    def _get_pregnancy_status(self):
+        """Currently hardcoded to give Not Pregnant"""
+        df = pd.read_html('https://s.details.loinc.org/LOINC/82810-3.html')[5]
+        df = df.iloc[4:,[3,5]]
+        df.columns = ['pregnancy_display','pregnancy_id']
+        df.iloc[2,0] = 'Unknown'
+        self.pregnancy_display = df[df.pregnancy_display == 'Not pregnant'].pregnancy_display.values[0]
+        #     pregnancy_display = random.choice(df.pregnancy_display.tolist())
+        self.pregnancy_loinc = df[df.pregnancy_display == self.pregnancy_display].pregnancy_id.values[0]
+
+    def _generate_gravidity_and_parity(self,patient):
+        """Generates a gravidity and parity between 0 and 6"""
+        if patient.gender == 'male':
+            self.gravidity = 0
+        else:
+            self.gravidity = random.choice(range(7))
+        if self.gravidity == 0:
+            self.parity = 0
+        else:
+            self.parity = self.gravidity - random.choice(range(self.gravidity))

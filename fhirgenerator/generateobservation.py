@@ -2,6 +2,7 @@ import generatebase
 import generatepatient
 import generatepractitioner
 import generateencounter
+import generateobservationdict
 
 import fhirclient.models.codeableconcept as cc
 import fhirclient.models.coding as c
@@ -48,10 +49,12 @@ class GenerateObservation(generatebase.GenerateBase):
             Observation.code = CodeableConcept
             Observation.status = 'final'
             Observation.subject = self._create_FHIRReference(self.Patient)
+            Observation.performer = [self._create_FHIRReference(self.Practitioner)]
+
         
             if value['type'] == 'quantity':
                 Observation = self._add_quantity_value(Observation,obs)
-            elif self.observation_dict[measurement]['type'] == 'codeable':
+            elif value['type'] == 'codeable':
                 Observation = self._add_codeable_value(Observation,obs)
             else:
                 raise ValueError('Measurement Type ValueError')
@@ -64,8 +67,5 @@ class GenerateObservation(generatebase.GenerateBase):
             Observation.id = self._extract_id()
 
 if __name__ == '__main__':
-    observation_dict = {
-            'sbp': {'type':'quantity','loinc':'8480-6','display':'Systolic Blood Pressure (mmHg)','unit':'mmHg','value':120},
-            'dbp': {'type':'quantity','loinc':'8462-4','display':'Diastolic Blood Pressure (mmHg)','unit':'mmHg','value':80}
-            }
-    GenerateObservation(observation_dict)
+    obs = generateobservationdict.GenerateObservationDict()
+    GenerateObservation(obs.observation_dict,Patient=obs.Patient)
