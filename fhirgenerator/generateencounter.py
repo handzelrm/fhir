@@ -2,6 +2,7 @@ import generatebase
 import generatepatient
 import generatelocation
 import generatecondition
+import generatepractitioner
 
 import fhirclient.models.codeableconcept as cc
 import fhirclient.models.coding as c
@@ -19,7 +20,7 @@ import datetime
 class GenerateEncounter(generatebase.GenerateBase):
 
 
-    def __init__(self, Patient=None, Location=None, Condition=None, Period=None, status='in-progress', fhir_class='outpatient'):
+    def __init__(self, Patient=None, Provider=None, Location=None, Condition=None, Period=None, status='in-progress', fhir_class='outpatient'):
         """Uses fhirclient.models to create encounter resource"""
 
         if Patient is not None and Condition is not None:
@@ -39,16 +40,6 @@ class GenerateEncounter(generatebase.GenerateBase):
         else:
             raise ValueError('Error with Patient and Condition values')
 
-        # if Condition == None:
-        #     self.Condition = generatecondition.GenerateCondition(Patient=self.Patient).Condition
-        # else:
-        #     self.Condition = Condition
-
-        # if Patient == None:
-        #     self.Patient = generatepatient.GeneratePatient().Patient
-        # else:
-        #     self.Patient = Patient
-
         if Location == None:
             self.Location = generatelocation.GenerateLocation().Location
         else:
@@ -58,6 +49,11 @@ class GenerateEncounter(generatebase.GenerateBase):
             self.Period = self._create_FHIRPeriod()
         else:
             self.Period = Period
+
+        if Provider == None:
+            self.Practitioner = generatepractitioner.GeneratePractitioner().Practitioner
+        else:
+            self.Provider = Provider
 
         self.status = status
         self.fhir_class = fhir_class
@@ -79,6 +75,10 @@ class GenerateEncounter(generatebase.GenerateBase):
         EncounterDiagnosis.condition = self._create_FHIRReference(self.Condition)        
         Encounter.diagnosis = [EncounterDiagnosis]
 
+        EncounterParticipant = enc.EncounterParticipant()
+        EncounterParticipant.individual = self._create_FHIRReference(self.Practitioner)
+        Encounter.participant = [EncounterParticipant]
+
         Encounter.period = self.Period
 
         # self._validate(Encounter)
@@ -90,6 +90,7 @@ class GenerateEncounter(generatebase.GenerateBase):
         self.Encounter.Condition = self.Condition
         self.Encounter.Location = self.Location
         self.Encounter.Period = self.Period
+        self.Encounter.Practitioner = self.Practitioner
 
 if __name__ == '__main__':
     GenerateEncounter()

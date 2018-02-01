@@ -19,36 +19,48 @@ class GenerateObservation(generatebase.GenerateBase):
         """Uses fhirclient.models to create and send vitals to server."""
         self.dt = dt
 
-        if Patient is not None and Encounter is not None:
+        if Patient is not None and Encounter is not None and Practitioner is not None:
+            if Patient.id != Encounter.Patient.id:
+                raise ValueError('Patient.id must equal Encounter.Patient.id')
+            if Encounter.Practitioner.id != Practitioner.id:
+                raise ValueError('Encounter.Practitioner.id must equal Practitioner.id')
+            self.Patient = Patient
+            self.Encounter = Encounter
+            self.Practitioner = Practitioner
+        elif Patient is not None and Encounter is not None and Practitioner is None:
             if Patient.id != Encounter.Patient.id:
                 raise ValueError('Patient.id must be the same as Encounter.Patient.id')
             self.Patient = Patient
             self.Encounter = Encounter
-        elif Encounter is None and Patient is None:
-            self.Encounter = generateencounter.GenerateEncounter().Encounter
-            self.Patient = self.Encounter.Patient
-        elif Encounter is not None and Patient is None:
-            self.Encounter = Encounter
-            self.Patient = self.Encounter.Patient
-        elif Encounter is None and Patient is not None:
+            self.Practitioner = Encounter.Practitioner
+        elif Patient is not None and Encounter is None and Practitioner is not None:
+            self.Patient = Patient
+            self.Practitioner = Practitioner
+            self.Encounter = generateencounter.GenerateEncounter(Patient=self.Patient,Practitioner=self.Practitioner).Encounter
+        elif Patient is not None and Encounter is None and Practitioner is None:
             self.Patient = Patient
             self.Encounter = generateencounter.GenerateEncounter(Patient=self.Patient).Encounter
+            self.Practitioner = self.Encounter.Practitioner
+        elif Patient is None and Encounter is not None and Practitioner is None:
+            self.Encounter = Encounter
+            self.Patient = self.Encounter.Patient
+            self.Practitioner = self.Encounter.Practitioner
+        elif Patient is None and Encounter is None and Practitioner is not None:
+            self.Practitioner = Practitioner
+            self.Encounter = generateencounter.GenerateEncounter(Practitioner=self.Practitioner).Encounter
+            self.Patient = self.Encounter.Patient
+        elif Patient is None and Encounter is not None and Practitioner is not None:
+            if Encounter.Practitioner.id != Practitioner.id:
+                raise ValueError('Encounter.Practitioner.id must equal Practitioner.id')
+            self.Encounter = Encounter
+            self.Patient = self.Encounter.Patient
+            self.Practitioner = Practitioner
+        elif Patient is None and Encounter is None and Practitioner is None:
+            self.Encounter = generateencounter.GenerateEncounter().Encounter
+            self.Patient = self.Encounter.Patient
+            self.Practitioner = self.Encounter.Practitioner
         else:
-            raise ValueError('Error with Patient and Encounter values.')
-
-
-        #     if self.Patient is None:
-        #         self.Patient = generatepatient.GeneratePatient()
-        #     self.Encounter = generateencounter.GenerateEncounter(Patient=self.Patient, Location=None, Condition=None).Encounter
-        #     self.Patient = self.Encounter.Patient
-        # else:
-        #     self.Encounter = Encounter
-        #     self.Patient = self.Encounter.Patient
-
-        if Practitioner == None:
-            self.Practitioner = generatepractitioner.GeneratePractitioner().Practitioner
-        else:
-            self.Practitioner = Practitioner        
+            raise ValueError('Error with Patient, Encounter, and Practitioner values.')
 
         self.observation_dict = observation_dict
 
@@ -91,5 +103,4 @@ if __name__ == '__main__':
     obs = GenerateObservation(obs_dict.observation_dict,Patient=obs_dict.Patient)
     labs = generatefparlabs.GenerateFparLabs()
 
-    # print(Patient.id)
     GenerateObservation(labs.lab_dict,Patient=obs.Patient,Practitioner=obs.Practitioner,Encounter=obs.Encounter)

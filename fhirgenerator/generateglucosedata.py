@@ -17,8 +17,9 @@ class GenerateGlucoseData(generatebase.GenerateBase):
         self._generate_value()
         self._generate_period()
 
-        self.observation_dict = {}
-        {'type':'quantity','loinc':'41653-7','display':'Glucose [Mass/​volume] in Capillary blood by Glucometer','unit':'mg/dL','value':self.glucose}
+        self.observation_dict = {
+        'glucose':{'type':'quantity','loinc':'41653-7','display':'Glucose [Mass/​volume] in Capillary blood by Glucometer','unit':'mg/dL','value':self.glucose}
+        }
 
     def _generate_value(self):
         self.glucose += np.random.normal(0,5*10)
@@ -46,6 +47,9 @@ class GenerateGlucoseData(generatebase.GenerateBase):
 
 if __name__ == '__main__':
     glucose_dict = GenerateGlucoseData()
-    inpt_encounter = generateencounter.GenerateEncounter(Period=glucose_dict.Period)
-    print(inpt_encounter.Period.start)
+    inpt_encounter = generateencounter.GenerateEncounter(Period=glucose_dict.Period).Encounter
+    dt = inpt_encounter.Period.start.date
+    while dt < datetime.datetime.now():
+        generateobservation.GenerateObservation(glucose_dict.observation_dict,dt=dt,Encounter=inpt_encounter)
+        dt += datetime.timedelta(hours=6)
     # generateobservation.GenerateObservation(glucose_dict,)
