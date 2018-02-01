@@ -119,5 +119,6 @@ class GenerateReferralRequest(generatebase.GenerateBase):
         self.ReferralRequest.Practitioner_recipient = self.Practitioner_recipient
         self.ReferralRequest.Encounter = self.Encounter
 
+
 if __name__ == '__main__':
     GenerateReferralRequest()

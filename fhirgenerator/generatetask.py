@@ -358,6 +358,18 @@ class GenerateTask(generatebase.GenerateBase):
         self.Task.Encounter = self.Encounter
         self.Task.ReferralRequest = self.ReferralRequest
 
+    def complete_task(self):
+        self.Task.status = 'completed'
+        if self.Task.ReferralRequest.Encounter.class_fhir == 'outpatient':
+            Encounter = generateencounter.GenerateEncounter()
+            self.Task.focus = self._create_FHIRReference(Encounter)
+        elif self.Task.ReferralRequest.Encounter.class_fhir == 'inptiaent':
+            self.Task.focus = self._create_FHIRReference(self.Encounter)
+        self.Task.executionPeriod = self._create_FHIRPeriod(end=datetime.datetime.now())
+        print(self.Task.as_json())
+        self.Task.update(server=self.connect2server().server)
+
 
 if __name__ == '__main__':
-    GenerateTask()
+    task = GenerateTask()
+    task.complete_task()
