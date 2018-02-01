@@ -37,6 +37,7 @@ class GenerateCondition(generatebase.GenerateBase):
         self.response = Condition.create(server=self.connect2server().server)
         Condition.id = self._extract_id()
         self.Condition = Condition
+        self.Condition.Patient = self.Patient
 
     def _generate_icd_code(self):
         df = pd.read_excel('../demographic_files/common_obgyn_visits_parsed.xlsx',sheetname='for OPA')

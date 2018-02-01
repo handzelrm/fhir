@@ -103,6 +103,8 @@ class GenerateBase():
         Period = period.Period()
         if start is not None:
             Period.start = self._create_FHIRDate(start)
+        else:
+            Period.start = self._create_FHIRDate(datetime.datetime.now())
         if end is not None:
             Period.end = self._create_FHIRDate(end)
         return Period
@@ -325,3 +327,28 @@ class GenerateBase():
             self.parity = 0
         else:
             self.parity = self.gravidity - random.choice(range(self.gravidity))
+
+    # def _check_ids(obj_1, obj_2):
+    #     if isinstance(obj_1,p.Patient()):
+    #         id_1 = obj_1.id
+    #     else:
+    #         if isinstance(obj_1.Patient,p.Patient()):
+    #             id_1 = obj_1.Patient.id
+    #         else:
+    #             raise ValueError(f'{obj_1} must have attribute of class Patient')
+
+    #     if isinstance(obj_2,p.Patient()):
+    #         id_2 = obj_2.id
+    #     else:
+    #         if isinstance(obj_2.Patient,p.Patient()):
+    #             id_1 = obj_2.Patient.id
+    #         else:
+    #             raise ValueError(f'{obj_2} must have attribute of class Patient')
+
+    #     if obj_1 is not None and obj_2 is not None:
+    #         if id_1 != id_2:
+    #             raise ValueError(f'{obj_1} and {obj_2} must have the same ids')
+    #         return obj_1, obj_2
+    #     elif obj_1 is not None and obj_2
+
+

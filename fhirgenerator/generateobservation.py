@@ -3,10 +3,12 @@ import generatepatient
 import generatepractitioner
 import generateencounter
 import generateobservationdict
+import generatefparlabs
 
 import fhirclient.models.codeableconcept as cc
 import fhirclient.models.coding as c
 import fhirclient.models.observation as o
+import fhirclient.models.patient as p
 
 import datetime
 
@@ -17,20 +19,36 @@ class GenerateObservation(generatebase.GenerateBase):
         """Uses fhirclient.models to create and send vitals to server."""
         self.dt = dt
 
-        if Patient == None:
-            self.Patient = generatepatient.GeneratePatient().Patient
-        else:
+        if Patient is not None and Encounter is not None:
+            if Patient.id != Encounter.Patient.id:
+                raise ValueError('Patient.id must be the same as Encounter.Patient.id')
             self.Patient = Patient
+            self.Encounter = Encounter
+        elif Encounter is None and Patient is None:
+            self.Encounter = generateencounter.GenerateEncounter().Encounter
+            self.Patient = self.Encounter.Patient
+        elif Encounter is not None and Patient is None:
+            self.Encounter = Encounter
+            self.Patient = self.Encounter.Patient
+        elif Encounter is None and Patient is not None:
+            self.Patient = Patient
+            self.Encounter = generateencounter.GenerateEncounter(Patient=self.Patient).Encounter
+        else:
+            raise ValueError('Error with Patient and Encounter values.')
+
+
+        #     if self.Patient is None:
+        #         self.Patient = generatepatient.GeneratePatient()
+        #     self.Encounter = generateencounter.GenerateEncounter(Patient=self.Patient, Location=None, Condition=None).Encounter
+        #     self.Patient = self.Encounter.Patient
+        # else:
+        #     self.Encounter = Encounter
+        #     self.Patient = self.Encounter.Patient
 
         if Practitioner == None:
             self.Practitioner = generatepractitioner.GeneratePractitioner().Practitioner
         else:
-            self.Practitioner_recipient = Practitioner
-
-        if Encounter == None:
-            self.Encounter = generateencounter.GenerateEncounter(Patient=self.Patient, Location=None, Condition=None).Encounter
-        else:
-            self.Encounter = Encounter
+            self.Practitioner = Practitioner        
 
         self.observation_dict = observation_dict
 
@@ -56,6 +74,8 @@ class GenerateObservation(generatebase.GenerateBase):
                 Observation = self._add_quantity_value(Observation,obs)
             elif value['type'] == 'codeable':
                 Observation = self._add_codeable_value(Observation,obs)
+            elif value['type'] == 'valuestring':
+                Observation.valueString = value['value']
             else:
                 raise ValueError('Measurement Type ValueError')
 
@@ -67,5 +87,9 @@ class GenerateObservation(generatebase.GenerateBase):
             Observation.id = self._extract_id()
 
 if __name__ == '__main__':
-    obs = generateobservationdict.GenerateObservationDict()
-    GenerateObservation(obs.observation_dict,Patient=obs.Patient)
+    obs_dict = generateobservationdict.GenerateObservationDict()
+    obs = GenerateObservation(obs_dict.observation_dict,Patient=obs_dict.Patient)
+    labs = generatefparlabs.GenerateFparLabs()
+
+    # print(Patient.id)
+    GenerateObservation(labs.lab_dict,Patient=obs.Patient,Practitioner=obs.Practitioner,Encounter=obs.Encounter)

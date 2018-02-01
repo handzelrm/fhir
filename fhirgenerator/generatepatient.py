@@ -1,38 +1,19 @@
 import generatebase
+
 import fhirclient.models.address as a
 import fhirclient.models.codeableconcept as cc
 import fhirclient.models.coding as c
-import fhirclient.models.condition as cond
-import fhirclient.models.encounter as enc
 import fhirclient.models.extension as e
 import fhirclient.models.fhirdate as fd
-import fhirclient.models.fhirreference as fr
 import fhirclient.models.humanname as hn
-import fhirclient.models.location as l
-import fhirclient.models.observation as o
 import fhirclient.models.patient as p
-import fhirclient.models.period as period
-import fhirclient.models.practitioner as pr
-import fhirclient.models.quantity as q
-import fhirclient.models.referralrequest as rr
-import fhirclient.models.task as t
-import fhirclient.models.valueset as v
-from fhirclient import client
-from fhirclient import server
-from fhirclient import auth
-import json
+
 import pandas as pd
-import numpy as np
 import random
-import requests
-import calendar
-import re
 import datetime
-import random
 import calendar
-import matplotlib.pyplot as plt
 from scipy.stats import gamma
-import os
+
 
 class GeneratePatient(generatebase.GenerateBase):   
     def __init__(self):
