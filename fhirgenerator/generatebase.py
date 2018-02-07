@@ -29,7 +29,6 @@ import re
 import datetime
 import random
 import calendar
-import matplotlib.pyplot as plt
 from scipy.stats import gamma
 import os
 

@@ -1,0 +1,15 @@
+certifi==2018.1.18
+chardet==3.0.4
+DateTime==4.2
+fhirclient==3.2.0
+idna==2.6
+isodate==0.6.0
+numpy==1.14.0
+pandas==0.22.0
+python-dateutil==2.6.1
+pytz==2017.3
+requests==2.18.4
+scipy==1.0.0
+six==1.11.0
+urllib3==1.22
+zope.interface==4.4.3
