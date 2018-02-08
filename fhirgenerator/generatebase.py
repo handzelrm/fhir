@@ -1,21 +1,9 @@
-import fhirclient.models.address as a
 import fhirclient.models.codeableconcept as cc
 import fhirclient.models.coding as c
-import fhirclient.models.condition as cond
-import fhirclient.models.encounter as enc
-import fhirclient.models.extension as e
 import fhirclient.models.fhirdate as fd
 import fhirclient.models.fhirreference as fr
-import fhirclient.models.humanname as hn
-import fhirclient.models.location as l
-import fhirclient.models.observation as o
-import fhirclient.models.patient as p
 import fhirclient.models.period as period
-import fhirclient.models.practitioner as pr
 import fhirclient.models.quantity as q
-import fhirclient.models.referralrequest as rr
-import fhirclient.models.task as t
-import fhirclient.models.valueset as v
 from fhirclient import client
 from fhirclient import server
 from fhirclient import auth
@@ -24,13 +12,8 @@ import pandas as pd
 import numpy as np
 import random
 import requests
-import calendar
 import re
 import datetime
-import random
-import calendar
-from scipy.stats import gamma
-import os
 
 class GenerateBase():
 
@@ -85,7 +68,6 @@ class GenerateBase():
         smoke_loinc = df[df.description==smoke_description].loinc.values[0]
         return smoke_loinc, smoke_description
 
-
     @staticmethod 
     def _create_FHIRReference(resource):
         FHIRReference = fr.FHIRReference()
@@ -110,8 +92,10 @@ class GenerateBase():
 
     # @staticmethod
     def _extract_id(self):
-        regex = re.compile(r'"[a-z]+/(\d+)/',re.IGNORECASE)
+        # regex = re.compile(r'"[a-z]+/(\d+)/',re.IGNORECASE)
+        regex = re.compile(r'\/(.*?)\/',re.IGNORECASE)
         id = regex.search(self.response['issue'][0]['diagnostics']).group(1)
+        print(id)
         return id
     
     @staticmethod
@@ -135,7 +119,11 @@ class GenerateBase():
         settings = {
             'app_id': 'hand_testing',
             'scope':'user/*.write',
-            'api_base': 'http://api-v5-stu3.hspconsortium.org/stu3/open/'
+            # 'api_base': 'http://api-v5-stu3.hspconsortium.org/stu3/open/'
+            # 'api_base': 'https://api-v5-stu3.hspconsortium.org/dmDBMI/open'
+            # 'api_base': 'https://api-v5-stu3.hspconsortium.org/handzelFPAR/open'
+            # 'api_base': 'https://api-v5-stu3.hspconsortium.org/handzel/open'
+            'api_base': 'https://api-v5-stu3.hspconsortium.org/handzelTest/open'
         }
         smart = client.FHIRClient(settings=settings)
         smart.prepare()
@@ -326,28 +314,4 @@ class GenerateBase():
             self.parity = 0
         else:
             self.parity = self.gravidity - random.choice(range(self.gravidity))
-
-    # def _check_ids(obj_1, obj_2):
-    #     if isinstance(obj_1,p.Patient()):
-    #         id_1 = obj_1.id
-    #     else:
-    #         if isinstance(obj_1.Patient,p.Patient()):
-    #             id_1 = obj_1.Patient.id
-    #         else:
-    #             raise ValueError(f'{obj_1} must have attribute of class Patient')
-
-    #     if isinstance(obj_2,p.Patient()):
-    #         id_2 = obj_2.id
-    #     else:
-    #         if isinstance(obj_2.Patient,p.Patient()):
-    #             id_1 = obj_2.Patient.id
-    #         else:
-    #             raise ValueError(f'{obj_2} must have attribute of class Patient')
-
-    #     if obj_1 is not None and obj_2 is not None:
-    #         if id_1 != id_2:
-    #             raise ValueError(f'{obj_1} and {obj_2} must have the same ids')
-    #         return obj_1, obj_2
-    #     elif obj_1 is not None and obj_2
-
 

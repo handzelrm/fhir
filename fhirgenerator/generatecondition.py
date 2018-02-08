@@ -40,7 +40,7 @@ class GenerateCondition(generatebase.GenerateBase):
         self.Condition.Patient = self.Patient
 
     def _generate_icd_code(self):
-        df = pd.read_excel('../demographic_files/common_obgyn_visits_parsed.xlsx',sheetname='for OPA')
+        df = pd.read_excel('../demographic_files/common_obgyn_visits_parsed.xlsx',sheet_name='for OPA')
         icd_list = []
         for row in df.iterrows():
             icd_list += row[1][0]*[row[1][1]]

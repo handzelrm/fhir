@@ -109,7 +109,7 @@ class GenerateTask(generatebase.GenerateBase):
             self.Encounter = Encounter
             self.Practitioner_agent = self.Encounter.Practitioner
             self.Practitioner_recipient = Practitioner_recipient
-            self.ReferralRequest = ReferralRequest(Patient=self.Patient,Encounter=self.Encounter,Practitioner_agent=self.Practitioner_agent,Practitioner_recipient=self.Practitioner_recipient).ReferralRequest
+            self.ReferralRequest = generatereferralrequest.GenerateReferralRequest(Patient=self.Patient,Encounter=self.Encounter,Practitioner_agent=self.Practitioner_agent,Practitioner_recipient=self.Practitioner_recipient).ReferralRequest
         elif Patient is not None and Encounter is not None and ReferralRequest is None and Practitioner_agent is not None and Practitioner_recipient is None:
             if Patient.id != Encounter.Patient.id:
                 raise ValueError('Patient.id must equal Encounter.Patient.id')
@@ -118,7 +118,7 @@ class GenerateTask(generatebase.GenerateBase):
             self.Patient = Patient
             self.Encounter = Encounter
             self.Practitioner_agent = Practitioner_agent
-            self.ReferralRequest = ReferralRequest(Patient=self.Patient,Encounter=self.Encounter,Practitioner_agent=self.Practitioner_agent).ReferralRequest
+            self.ReferralRequest = generatereferralrequest.GenerateReferralRequest(Patient=self.Patient,Encounter=self.Encounter,Practitioner_agent=self.Practitioner_agent).ReferralRequest
             self.Practitioner_recipient = self.ReferralRequest.Practitioner_recipient
         elif Patient is not None and Encounter is not None and ReferralRequest is None and Practitioner_agent is None and Practitioner_recipient is not None:
             if Patient.id != Encounter.Patient.id:
@@ -127,7 +127,7 @@ class GenerateTask(generatebase.GenerateBase):
             self.Encounter = Encounter
             self.Practitioner_agent = self.Encounter.Practitioner
             self.Practitioner_recipient = Practitioner_recipient
-            self.ReferralRequest = ReferralRequest(Patient=self.Patient,Encounter=self.Encounter,Practitioner_agent=self.Practitioner_agent,Practitioner_recipient=self.Practitioner_recipient).ReferralRequest
+            self.ReferralRequest = generatereferralrequest.GenerateReferralRequest(Patient=self.Patient,Encounter=self.Encounter,Practitioner_agent=self.Practitioner_agent,Practitioner_recipient=self.Practitioner_recipient).ReferralRequest
         elif Patient is not None and Encounter is not None and ReferralRequest is None and Practitioner_agent is not None and Practitioner_recipient is not None:
             if Patient.id != Encounter.Patient.id:
                 raise ValueError('Patient.id must equal Encounter.Patient.id')
@@ -137,7 +137,7 @@ class GenerateTask(generatebase.GenerateBase):
             self.Encounter = Encounter
             self.Practitioner_agent = Practitioner_agent
             self.Practitioner_recipient = Practitioner_recipient
-            self.ReferralRequest = ReferralRequest(Patient=self.Patient,Encounter=self.Encounter,Practitioner_agent=self.Practitioner_agent).ReferralRequest
+            self.ReferralRequest = generatereferralrequest.GenerateReferralRequest(Patient=self.Patient,Encounter=self.Encounter,Practitioner_agent=self.Practitioner_agent).ReferralRequest
 
         elif Patient is not None and Encounter is None and ReferralRequest is not None and Practitioner_agent is None and Practitioner_recipient is None:
             if Patient.id != ReferralRequest.Patient.id:
@@ -184,7 +184,7 @@ class GenerateTask(generatebase.GenerateBase):
             self.Encounter = Encounter
             self.Patient = self.Encounter.Patient
             self.Practitioner_agent = self.Encounter.Practioner
-            self.ReferralRequest = ReferralRequest(Patient=self.Patient,Encounter=self.Encounter,Practitioner_agent=self.Practitioner_agent).ReferralRequest
+            self.ReferralRequest = generatereferralrequest.GenerateReferralRequest(Patient=self.Patient,Encounter=self.Encounter,Practitioner_agent=self.Practitioner_agent).ReferralRequest
             self.Practitioner_recipient = self.ReferralRequest.Practitioner_recipient
         elif Patient is None and Encounter is not None and ReferralRequest is None and Practitioner_agent is not None and Practitioner_recipient is None:
             if Practitioner_agent.id != Encounter.Practitioner.id:
@@ -192,13 +192,13 @@ class GenerateTask(generatebase.GenerateBase):
             self.Encounter = Encounter
             self.Patient = self.Encounter.Patient
             self.Practitioner_agent = self.Practitioner_agent
-            self.ReferralRequest = ReferralRequest(Patient=self.Patient,Encounter=self.Encounter,Practitioner_agent=self.Practitioner_agent).ReferralRequest
+            self.ReferralRequest = generatereferralrequest.GenerateReferralRequest(Patient=self.Patient,Encounter=self.Encounter,Practitioner_agent=self.Practitioner_agent).ReferralRequest
             self.Practitioner_recipient = self.ReferralRequest.Practitioner_recipient
         elif Patient is None and Encounter is not None and ReferralRequest is None and Practitioner_agent is None and Practitioner_recipient is not None:
             self.Encounter = Encounter
             self.Patient = self.Encounter.Patient
             self.Practitioner_agent = self.Encounter.Practioner
-            self.ReferralRequest = ReferralRequest(Patient=self.Patient,Encounter=self.Encounter,Practitioner_agent=self.Practitioner_agent).ReferralRequest
+            self.ReferralRequest = generatereferralrequest.GenerateReferralRequest(Patient=self.Patient,Encounter=self.Encounter,Practitioner_agent=self.Practitioner_agent).ReferralRequest
             self.Practitioner_recipient = self.ReferralRequest.Practitioner_recipient
         elif Patient is None and Encounter is not None and ReferralRequest is None and Practitioner_agent is not None and Practitioner_recipient is not None:
             if Practitioner_agent.id != Encounter.Practitioner.id:
@@ -206,7 +206,7 @@ class GenerateTask(generatebase.GenerateBase):
             self.Encounter = Encounter
             self.Patient = self.Encounter.Patient
             self.Practitioner_agent = Practitioner_agent
-            self.ReferralRequest = ReferralRequest(Patient=self.Patient,Encounter=self.Encounter,Practitioner_agent=self.Practitioner_agent).ReferralRequest
+            self.ReferralRequest = generatereferralrequest.GenerateReferralRequest(Patient=self.Patient,Encounter=self.Encounter,Practitioner_agent=self.Practitioner_agent).ReferralRequest
             self.Practitioner_recipient = self.ReferralRequest.Practitioner_recipient
 
         elif Patient is None and Encounter is None and ReferralRequest is not None and Practitioner_agent is None and Practitioner_recipient is None:
@@ -318,16 +318,6 @@ class GenerateTask(generatebase.GenerateBase):
 
         else:
             raise ValueError('Error with Patient, Encounter, and ReferralRequest values')
-
-        # if Practitioner_agent == None:
-        #     self.Practitioner_agent = generatepractitioner.GeneratePractitioner().Practitioner
-        # else:
-        #     self.Practitioner_agent = Practitioner_agent
-
-        # if Practitioner_recipient == None:
-        #     self.Practitioner_recipient = generatepractitioner.GeneratePractitioner().Practitioner
-        # else:
-        #     self.Practitioner_recipient = Practitioner_recipient
 
         Task = t.Task()
         Task.status = 'requested'
