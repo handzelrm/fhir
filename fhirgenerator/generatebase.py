@@ -95,7 +95,6 @@ class GenerateBase():
         # regex = re.compile(r'"[a-z]+/(\d+)/',re.IGNORECASE)
         regex = re.compile(r'\/(.*?)\/',re.IGNORECASE)
         id = regex.search(self.response['issue'][0]['diagnostics']).group(1)
-        print(id)
         return id
     
     @staticmethod
@@ -314,4 +313,10 @@ class GenerateBase():
             self.parity = 0
         else:
             self.parity = self.gravidity - random.choice(range(self.gravidity))
+
+    def _get_fpar_random_value(self,item_name):
+        df = pd.read_excel('../demographic_files/valueset.xlsx',sheet_name='Sheet1')
+        df = df.fillna('N/A')
+        item_value = df[df.item == item_name].valueset.tolist()
+        return random.choice(item_value)
 

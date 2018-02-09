@@ -101,6 +101,6 @@ class GenerateObservation(generatebase.GenerateBase):
 if __name__ == '__main__':
     obs_dict = generateobservationdict.GenerateObservationDict()
     obs = GenerateObservation(obs_dict.observation_dict,Patient=obs_dict.Patient)
-    labs = generatefparlabs.GenerateFparLabs()
+    # labs = generatefparlabs.GenerateFparLabs()
 
-    GenerateObservation(labs.lab_dict,Patient=obs.Patient,Practitioner=obs.Practitioner,Encounter=obs.Encounter)
+    # GenerateObservation(labs.lab_dict,Patient=obs.Patient,Practitioner=obs.Practitioner,Encounter=obs.Encounter)
