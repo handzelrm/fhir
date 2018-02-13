@@ -37,7 +37,7 @@ def main():
 if __name__ == '__main__':
     name_list = []
     id_list = []
-    for i in range(50):
+    for i in range(100):
         name, pt_id = main()
         name_list.append(name)
         id_list.append(pt_id)
