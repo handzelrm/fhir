@@ -16,10 +16,7 @@ class GenerateFparLabs(generatebase.GenerateBase):
         self.hpv = labvaluesets.LabValueSets('ValueSet','FPARhumanPapillomaVirusTests')
         self.pap = labvaluesets.LabValueSets('ValueSet','FPARpapSmearTests')
         self.preg = labvaluesets.LabValueSets('ValueSet','FPARpregnancyTests')
-
-        # print(self.hiv.valueset)
-        # print(self.hiv.LoincSet)
-
+        
         self._generate_lab_df()
 
         self.lab_dict = {}

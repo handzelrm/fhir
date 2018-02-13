@@ -35,6 +35,7 @@ class GenerateLocation(generatebase.GenerateBase):
         LocationPosition.latitude = self.location_latitude
         LocationPosition.longitude = self.location_longitude
         Location.position = LocationPosition
+        self._validate(Location)
         self.response = Location.create(server=self.connect2server().server)
         Location.id = self._extract_id()
         self.Location = Location

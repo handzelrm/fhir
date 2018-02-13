@@ -53,7 +53,7 @@ class GenerateEncounter(generatebase.GenerateBase):
         if Provider == None:
             self.Practitioner = generatepractitioner.GeneratePractitioner().Practitioner
         else:
-            self.Provider = Provider
+            self.Practitioner = Provider
 
         self.status = status
         self.fhir_class = fhir_class

@@ -33,7 +33,7 @@ class GenerateCondition(generatebase.GenerateBase):
         # Patient_FHIRReference.reference = f'Patient/{self.Patient.id}'
         Condition.subject = self._create_FHIRReference(self.Patient)
                 
-#         self._validate(Condition)
+        # self._validate(Condition)
         self.response = Condition.create(server=self.connect2server().server)
         Condition.id = self._extract_id()
         self.Condition = Condition

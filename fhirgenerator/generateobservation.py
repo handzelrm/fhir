@@ -94,7 +94,8 @@ class GenerateObservation(generatebase.GenerateBase):
             Observation.effectiveDateTime = self._create_FHIRDate(self.dt)
                  
             Observation.context = self._create_FHIRReference(self.Encounter) 
-               
+            
+            # self._validate(Observation)   
             self.response = Observation.create(server=self.connect2server().server)
             Observation.id = self._extract_id()
 

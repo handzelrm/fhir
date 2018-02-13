@@ -29,6 +29,8 @@ class GeneratePractitioner(generatebase.GenerateBase):
         name.family, name.given, Practitioner.gender = self._generate_person()
 
         Practitioner.name = [name]
+
+        self._validate(Practitioner)
         self.response = Practitioner.create(server=self.connect2server().server)
         Practitioner.id = self._extract_id()  
         self.Practitioner = Practitioner
