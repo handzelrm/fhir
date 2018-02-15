@@ -11,7 +11,7 @@ import fhirclient.models.observation as o
 import fhirclient.models.patient as p
 
 import datetime
-
+import os
 os.chdir(os.path.dirname(os.path.realpath(__file__)))
 
 class GenerateObservation(generatebase.GenerateBase):

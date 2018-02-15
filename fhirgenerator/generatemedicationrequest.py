@@ -5,7 +5,6 @@ import fhirclient.models.medicationrequest as medreq
 import fhirclient.models.patient as p
 
 import os
-
 os.chdir(os.path.dirname(os.path.realpath(__file__)))
 
 class GenerateMedicationRequest(generatebase.GenerateBase):
@@ -14,6 +13,7 @@ class GenerateMedicationRequest(generatebase.GenerateBase):
             self.Patient = generatepatient.GeneratePatient().Patient
         else:
             self.Patient = Patient
+
 
 
         MedicationRequest = medreq.MedicationRequest()

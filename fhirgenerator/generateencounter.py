@@ -16,7 +16,7 @@ import fhirclient.models.period as period
 import fhirclient.models.practitioner as pr
 
 import datetime
-
+import os
 os.chdir(os.path.dirname(os.path.realpath(__file__)))
 
 class GenerateEncounter(generatebase.GenerateBase):

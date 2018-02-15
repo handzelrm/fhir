@@ -2,7 +2,7 @@ import generatebase
 
 import fhirclient.models.address as a
 import fhirclient.models.location as l
-
+import os
 os.chdir(os.path.dirname(os.path.realpath(__file__)))
 
 

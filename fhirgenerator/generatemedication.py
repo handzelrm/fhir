@@ -1,7 +1,6 @@
 import generatebase
-
 import fhirclient.models.medication as med
-
+import os
 os.chdir(os.path.dirname(os.path.realpath(__file__)))
 
 
@@ -17,6 +16,7 @@ class GenerateMedication(generatebase.GenerateBase):
         MedicationIngredient = med.MedicationIngredient()
         # # MedicationIngredient.isActive = True
         MedicationIngredient.itemCodeableConcept = self._create_FHIRCodeableConcept('test')
+
         # print(MedicationIngredient.item)
         # print(MedicationIngredient.as_json())
         # Medication.ingredient = [MedicationIngredient]

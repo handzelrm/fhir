@@ -7,6 +7,7 @@ import generatereferralrequest
 import fhirclient.models.task as t
 
 import datetime
+import os
 os.chdir(os.path.dirname(os.path.realpath(__file__)))
 
 class GenerateTask(generatebase.GenerateBase):

@@ -7,7 +7,7 @@ import fhirclient.models.condition as cond
 
 import random
 import pandas as pd
-
+import os
 os.chdir(os.path.dirname(os.path.realpath(__file__)))
 
 

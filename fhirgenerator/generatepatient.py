@@ -12,8 +12,8 @@ import pandas as pd
 import random
 import datetime
 import calendar
-import os
 from scipy.stats import gamma
+import os
 os.chdir(os.path.dirname(os.path.realpath(__file__)))
 
 class GeneratePatient(generatebase.GenerateBase):

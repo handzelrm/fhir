@@ -7,7 +7,7 @@ import datetime
 import random
 import calendar
 import argparse
-
+import os
 os.chdir(os.path.dirname(os.path.realpath(__file__)))
 
 class GenerateGlucoseData(generatebase.GenerateBase):

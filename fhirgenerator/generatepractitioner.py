@@ -5,6 +5,7 @@ import fhirclient.models.coding as c
 import fhirclient.models.humanname as hn
 import fhirclient.models.practitioner as pr
 import random
+import os
 os.chdir(os.path.dirname(os.path.realpath(__file__)))
 
 
