@@ -44,7 +44,7 @@ def loop_generator(num,output,timeit):
 def main():
     parser = argparse.ArgumentParser()
 
-    parser.add_argument('num', help="Number of fpar patients to create.", type=int)
+    parser.add_argument('num', help='Number of fpar patients to create.', type=int)
     parser.add_argument('-o','--output', help='Output the result to an excel file', action='store_true')
     parser.add_argument('-t', '--timeit', help='Print the time it takes to run each patient.', action='store_true')
     args = parser.parse_args()

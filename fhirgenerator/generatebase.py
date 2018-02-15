@@ -16,7 +16,7 @@ import re
 import datetime
 
 class GenerateBase():
-
+    """Base class used to share common methods used within other generate classes"""
     @staticmethod
     def _generate_vitals():
         """Generates a set of vitals using a normal distribution times 10"""
@@ -70,17 +70,37 @@ class GenerateBase():
 
     @staticmethod 
     def _create_FHIRReference(resource):
+        """
+        Used to create a FHIR reference object based on a FHIRClient.models object
+
+        :param resource: FHIRClient.models class object (i.e. Patient())
+        :returns: FHIRReference object
+        """
         FHIRReference = fr.FHIRReference()
         FHIRReference.reference = f'{resource.resource_type}/{resource.id}'
         return FHIRReference
 
     @staticmethod
     def _create_FHIRDate(date):
+        """
+        Creates a FHIRDate object
+
+        :param date: datetime object used to set the date in the FHIRDate object
+        :returns: FHIRDate object
+        """
         FHIRDate = fd.FHIRDate()
         FHIRDate.date = date
         return FHIRDate
     
     def _create_FHIRPeriod(self,start=None,end=None):
+        """
+        Creates a FHIRPeriod object
+
+        :param self: needed to call _create_FHIRDate method
+        :param start: start datetime object
+        :param end: end datetime object
+        :returns: FHIRPeriod object
+        """
         Period = period.Period()
         if start is not None:
             Period.start = self._create_FHIRDate(start)
@@ -92,13 +112,14 @@ class GenerateBase():
 
     # @staticmethod
     def _extract_id(self):
+        """Uses regex to parse out the id from the server response to posting."""
         # regex = re.compile(r'"[a-z]+/(\d+)/',re.IGNORECASE)
         regex = re.compile(r'\/(.*?)\/',re.IGNORECASE)
         id = regex.search(self.response['issue'][0]['diagnostics']).group(1)
         return id
     
     @staticmethod
-    def _create_FHIRCodeableConcept(code,system,display):
+    def _create_FHIRCodeableConcept(code, system=None ,display=None):
         CodeableConcept = cc.CodeableConcept()
         Coding = c.Coding()
         Coding.code = code
