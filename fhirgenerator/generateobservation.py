@@ -12,9 +12,11 @@ import fhirclient.models.patient as p
 
 import datetime
 
+os.chdir(os.path.dirname(os.path.realpath(__file__)))
+
 class GenerateObservation(generatebase.GenerateBase):
 
-    
+
     def __init__(self,observation_dict,dt=datetime.datetime.now(),Patient=None, Practitioner=None, Encounter=None):
         """Uses fhirclient.models to create and send vitals to server."""
         self.dt = dt
@@ -66,7 +68,7 @@ class GenerateObservation(generatebase.GenerateBase):
 
         if not isinstance(self.observation_dict,dict):
             raise ValueError('observation_dict needs to be a dictionary of observations')
-        
+
         for obs,value in self.observation_dict.items():
             Observation = o.Observation()
             CodeableConcept = cc.CodeableConcept()
@@ -81,7 +83,7 @@ class GenerateObservation(generatebase.GenerateBase):
             Observation.subject = self._create_FHIRReference(self.Patient)
             Observation.performer = [self._create_FHIRReference(self.Practitioner)]
 
-        
+
             if value['type'] == 'quantity':
                 Observation = self._add_quantity_value(Observation,obs)
             elif value['type'] == 'codeable':
@@ -92,10 +94,10 @@ class GenerateObservation(generatebase.GenerateBase):
                 raise ValueError('Measurement Type ValueError')
 
             Observation.effectiveDateTime = self._create_FHIRDate(self.dt)
-                 
-            Observation.context = self._create_FHIRReference(self.Encounter) 
-            
-            # self._validate(Observation)   
+
+            Observation.context = self._create_FHIRReference(self.Encounter)
+
+            # self._validate(Observation)
             self.response = Observation.create(server=self.connect2server().server)
             Observation.id = self._extract_id()
 

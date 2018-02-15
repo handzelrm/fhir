@@ -15,6 +15,8 @@ import requests
 import re
 import datetime
 
+os.chdir(os.path.dirname(os.path.realpath(__file__)))
+
 class GenerateBase():
     """Base class used to share common methods used within other generate classes"""
     @staticmethod
@@ -38,21 +40,21 @@ class GenerateBase():
         std_height_male = 4
         avg_height_female = 63.7
         std_height_female = 3.5
-        
+
         avg_weight_male = 195.7
         std_weight_male = 30
         avg_weight_female = 168.5
         std_weight_female = 25
-        
+
         if sex =='unknown':
             sex = random.choice(['male','female'])
-    
+
         if sex == 'male':
             height = np.random.normal(avg_height_male,std_height_male)
             weight = np.random.normal(avg_weight_male,std_weight_male)
         elif sex == 'female':
             height = np.random.normal(avg_height_female,std_height_female)
-            weight = np.random.normal(avg_weight_female,std_weight_female)            
+            weight = np.random.normal(avg_weight_female,std_weight_female)
         else:
             raise ValueError('sex error')
         return height, weight
@@ -68,7 +70,7 @@ class GenerateBase():
         smoke_loinc = df[df.description==smoke_description].loinc.values[0]
         return smoke_loinc, smoke_description
 
-    @staticmethod 
+    @staticmethod
     def _create_FHIRReference(resource):
         """
         Used to create a FHIR reference object based on a FHIRClient.models object
@@ -91,7 +93,7 @@ class GenerateBase():
         FHIRDate = fd.FHIRDate()
         FHIRDate.date = date
         return FHIRDate
-    
+
     def _create_FHIRPeriod(self,start=None,end=None):
         """
         Creates a FHIRPeriod object
@@ -117,7 +119,7 @@ class GenerateBase():
         regex = re.compile(r'\/(.*?)\/',re.IGNORECASE)
         id = regex.search(self.response['issue'][0]['diagnostics']).group(1)
         return id
-    
+
     @staticmethod
     def _create_FHIRCodeableConcept(code, system=None ,display=None):
         CodeableConcept = cc.CodeableConcept()
@@ -127,7 +129,7 @@ class GenerateBase():
         Coding.display = display
         CodeableConcept.coding = [Coding]
         return CodeableConcept
-    
+
     def _validate(self,resource):
         validate = self.connect2server().server.post_json(path=f'{resource.resource_type}/$validate',resource_json=resource.as_json())
         if validate.status_code != 200:
@@ -149,7 +151,7 @@ class GenerateBase():
         smart.prepare()
         return smart
 
-    @staticmethod    
+    @staticmethod
     def read_json(file):
         """Reads json file and returns json object"""
         with open(file,'r') as f:
@@ -167,17 +169,17 @@ class GenerateBase():
         if self.loinc==None:
             return None
         df = pd.read_excel('./fhir/all_lab_values.xlsx')
-        valueset_list = df[df.loinc==self.loinc].value.tolist()        
+        valueset_list = df[df.loinc==self.loinc].value.tolist()
         return valueset_list
 
     def dict_search(self,data=None):
         """Recursive function that works in conjuction with list_search.  Hard coded for looking up LOINC codes."""
         if data == None:
             data = self.jdata
-        for k,v in data.items():            
+        for k,v in data.items():
             #parsing loinc
-            if k=='system' and v=='http://loinc.org': 
-                try: 
+            if k=='system' and v=='http://loinc.org':
+                try:
                     isinstance(data['concept'],list)
                     for loinc_dict in data['concept']:
                         self.LoincSet.append(loinc_dict['code'])
@@ -188,12 +190,12 @@ class GenerateBase():
                     print(f"id:{data['id']}")
                     pass
                 except KeyError:
-                    print(f"path:{data['path']}") 
+                    print(f"path:{data['path']}")
                     pass
             if isinstance(v,dict):
                 self.dict_search(v)
             elif isinstance(v,list):
-                self.list_search(v)                
+                self.list_search(v)
 
     def list_search(self,data):
         """Recursive function that works in conjuction with dict_search."""
@@ -206,13 +208,13 @@ class GenerateBase():
                 self.list_search(v)
 
     @staticmethod
-    def _generate_person():        
+    def _generate_person():
 
         name_first_dict = {}
         df = pd.read_excel('../demographic_files/common_name_first.xlsx')
         name_first_dict['male'] = df.men.tolist()
         name_first_dict['female'] = df.women.tolist()
-        
+
         name_last_list = []
         df = pd.read_excel('../demographic_files/common_name_last.xlsx')
         name_last_list = df.name_last.tolist()
@@ -223,25 +225,25 @@ class GenerateBase():
 
         return name_last, [name_first], gender
 
-        
+
     def _add_quantity_value(self,Observation,measurement):
         """
         Adds a quantity value object to Observation.
-        
+
         :param Observation: fhirclient.models.observation.Observation object
         :param measurement: measurement dictionary
         :returns: Observation object
-        """       
+        """
         Quantity = q.Quantity()
         Quantity.value = self.observation_dict[measurement]['value']
         Quantity.unit = self.observation_dict[measurement]['unit']
         Observation.valueQuantity = Quantity
         return Observation
-    
+
     def _add_codeable_value(self,Observation,measurement):
         """
         Adds a codeableconcept value object to Observation.
-        
+
         :param Observation: fhirclient.models.observation.Observation object
         :param measurement: measurement dictionary
         :returns: Observation Object
@@ -277,21 +279,21 @@ class GenerateBase():
         std_height_male = 4
         avg_height_female = 63.7
         std_height_female = 3.5
-        
+
         avg_weight_male = 195.7
         std_weight_male = 30
         avg_weight_female = 168.5
         std_weight_female = 25
-        
+
         if sex =='unknown':
             sex = random.choice(['male','female'])
-    
+
         if sex == 'male':
             height = np.random.normal(avg_height_male,std_height_male)
             weight = np.random.normal(avg_weight_male,std_weight_male)
         elif sex == 'female':
             height = np.random.normal(avg_height_female,std_height_female)
-            weight = np.random.normal(avg_weight_female,std_weight_female)            
+            weight = np.random.normal(avg_weight_female,std_weight_female)
         else:
             raise ValueError('sex error')
         return height, weight
@@ -313,7 +315,7 @@ class GenerateBase():
         df.columns = ['income_range','answer_id']
         self.income_range = random.choice(df.income_range.tolist())
         self.income_loinc = df[df.income_range == self.income_range].answer_id.values[0]
-        
+
     def _get_pregnancy_status(self):
         """Currently hardcoded to give Not Pregnant"""
         df = pd.read_html('https://s.details.loinc.org/LOINC/82810-3.html')[5]
@@ -340,4 +342,3 @@ class GenerateBase():
         df = df.fillna('N/A')
         item_value = df[df.item == item_name].valueset.tolist()
         return random.choice(item_value)
-

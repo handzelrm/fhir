@@ -1,8 +1,8 @@
 import generatebase
 
-import fhirclient.models.coding as c
-import fhirclient.models.codeableconcept as cc
 import fhirclient.models.medication as med
+
+os.chdir(os.path.dirname(os.path.realpath(__file__)))
 
 
 class GenerateMedication(generatebase.GenerateBase):
@@ -28,7 +28,7 @@ class GenerateMedication(generatebase.GenerateBase):
         print(MedicationIngredient.as_json())
 
 
-    
+
 
 
 # CodeableConcept = cc.CodeableConcept()

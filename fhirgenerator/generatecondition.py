@@ -8,11 +8,13 @@ import fhirclient.models.condition as cond
 import random
 import pandas as pd
 
+os.chdir(os.path.dirname(os.path.realpath(__file__)))
+
 
 class GenerateCondition(generatebase.GenerateBase):
 
     def __init__(self, Patient=None):
-        
+
         if Patient == None:
             self.Patient = generatepatient.GeneratePatient().Patient
         else:
@@ -27,12 +29,12 @@ class GenerateCondition(generatebase.GenerateBase):
         Coding.display = self.icd_description
         CodeableConcept.coding = [Coding]
         Condition.code = CodeableConcept
-        
+
 
         # Patient_FHIRReference = fr.FHIRReference()
         # Patient_FHIRReference.reference = f'Patient/{self.Patient.id}'
         Condition.subject = self._create_FHIRReference(self.Patient)
-                
+
         # self._validate(Condition)
         self.response = Condition.create(server=self.connect2server().server)
         Condition.id = self._extract_id()

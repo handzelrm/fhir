@@ -6,6 +6,7 @@ import generateencounter
 import fhirclient.models.referralrequest as rr
 
 import datetime
+os.chdir(os.path.dirname(os.path.realpath(__file__)))
 
 class GenerateReferralRequest(generatebase.GenerateBase):
 

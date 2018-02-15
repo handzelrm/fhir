@@ -7,6 +7,7 @@ import generatereferralrequest
 import fhirclient.models.task as t
 
 import datetime
+os.chdir(os.path.dirname(os.path.realpath(__file__)))
 
 class GenerateTask(generatebase.GenerateBase):
 
@@ -337,7 +338,7 @@ class GenerateTask(generatebase.GenerateBase):
         Task.context = self._create_FHIRReference(self.Encounter)
 
         Task.basedOn = [self._create_FHIRReference(self.ReferralRequest)]
-        
+
         # self._validate(Task)
         self.response = Task.create(self.connect2server().server)
         Task.id = self._extract_id()
