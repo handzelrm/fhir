@@ -2,7 +2,6 @@ import generatebase
 import os
 os.chdir(os.path.dirname(os.path.realpath(__file__)))
 
-
 class LabValueSets(generatebase.GenerateBase):
     def __init__(self,ResourceType,StructureDefinition):
         """Creates object with resource type and list of LOINC codes"""
