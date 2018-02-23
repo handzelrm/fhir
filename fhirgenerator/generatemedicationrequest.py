@@ -9,7 +9,7 @@ import os
 os.chdir(os.path.dirname(os.path.realpath(__file__)))
 
 class GenerateMedicationRequest(generatebase.GenerateBase):
-    def __init__(self,Patient=None, Medication=None):
+    def __init__(self,Patient=None, Medication=None, Encounter=None, Practitioner=None):
         if Patient is None:
             self.Patient = generatepatient.GeneratePatient().Patient
         else:
@@ -23,6 +23,7 @@ class GenerateMedicationRequest(generatebase.GenerateBase):
         MedicationRequest = medreq.MedicationRequest()
         MedicationRequest.status = 'active'
         MedicationRequest.intent = 'order'
+        Medication.priority = 'routine'
         MedicationRequest.medicationReference = self._create_FHIRReference(self.Medication)
         MedicationRequest.subject = self._create_FHIRReference(self.Patient)
 
