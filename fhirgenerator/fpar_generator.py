@@ -7,6 +7,8 @@ import os
 import time
 import argparse
 
+os.chdir(os.path.dirname(os.path.realpath(__file__)))
+
 
 def generate_fpar_resources(timeit):
     t0 = time.time()
@@ -19,7 +21,7 @@ def generate_fpar_resources(timeit):
 
     task = GenerateTask(Patient=obs_vitals.Patient,Practitioner_agent=obs_vitals.Practitioner, Encounter=obs_vitals.Encounter)
     task.complete_task()
-    
+
     name = f'{task.Patient.name[0].family},{task.Patient.name[0].given[0]}'
     pt_id = f'{task.Patient.id}'
 
@@ -39,7 +41,7 @@ def loop_generator(num,output,timeit):
         id_list.append(pt_id)
     if output:
         pd.DataFrame({'name':name_list,'id':id_list}).to_excel('../fpar/patient_list.xlsx',index=False)
-    
+
 
 def main():
     parser = argparse.ArgumentParser()
@@ -53,4 +55,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-    

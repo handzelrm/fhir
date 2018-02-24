@@ -1,42 +1,36 @@
 import generatebase
-
-import fhirclient.models.coding as c
-import fhirclient.models.codeableconcept as cc
 import fhirclient.models.medication as med
+import os
+os.chdir(os.path.dirname(os.path.realpath(__file__)))
 
 
 class GenerateMedication(generatebase.GenerateBase):
 
-    def __init__(self):
-        Medication = med.Medication()
-        Medication.code = self._create_FHIRCodeableConcept('Placeholder for code')
-        Medication.form = self._create_FHIRCodeableConcept('Placeholder for form')
-        Medication.status = 'active'
-        # Medication.ingredient = [self._create_FHIRCodeableConcept('Placeholder')]
+    def __init__(self,medication_dict):
+        """
+        Creates FHIR Medication resources from a dictionary.
 
-        MedicationIngredient = med.MedicationIngredient()
-        # # MedicationIngredient.isActive = True
-        MedicationIngredient.itemCodeableConcept = self._create_FHIRCodeableConcept('test')
-        # print(MedicationIngredient.item)
-        # print(MedicationIngredient.as_json())
-        # Medication.ingredient = [MedicationIngredient]
-        print(Medication.as_json())
+        :param medication_dict: dictionary of medications that are looped through
+        """
+        self.medication_dict = medication_dict
 
-        # MedicationIngredient = med.MedicationIngredient()
-        # MedicationIngredient.item = []
+        for obs,value in self.medication_dict.items():
 
-        print(MedicationIngredient.as_json())
+            Medication = med.Medication()
+            Medication.code = self._create_FHIRCodeableConcept(value['rx_code'], system='http://www.nlm.nih.gov/research/umls/rxnorm')
+            Medication.form = self._create_FHIRCodeableConcept(value['form_code'], display=value['form_code'],system='http://hl7.org/fhir/ValueSet/medication-form-codes')
 
+            Medication.status = 'active'
+            MedicationIngredient = med.MedicationIngredient()
+            MedicationIngredient.isActive = True
+            MedicationIngredient.itemCodeableConcept = self._create_FHIRCodeableConcept('test')
 
-    
+            self.response = Medication.create(server=self.connect2server().server)
+            Medication.id = self._extract_id()
 
+            self.Medication = Medication
 
-# CodeableConcept = cc.CodeableConcept()
-#         Coding = c.Coding()
-#         Coding.code = 'en-US'
-#         Coding.system = 'http://hl7.org/fhir/ValueSet/languages'
-#         Coding.display = 'English'
-#         CodeableConcept.coding = [Coding]
 
 if __name__ == '__main__':
-    GenerateMedication()
+    medication_dict = {'glargine':{'rx_code':'274783','form_code':'385219001','form_display':'Injection solution'}}
+    GenerateMedication(medication_dict)

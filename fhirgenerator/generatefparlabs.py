@@ -4,6 +4,8 @@ import labvaluesets
 import pandas as pd
 import numpy as np
 import random
+import os
+os.chdir(os.path.dirname(os.path.realpath(__file__)))
 
 
 class GenerateFparLabs(generatebase.GenerateBase):
@@ -16,7 +18,7 @@ class GenerateFparLabs(generatebase.GenerateBase):
         self.hpv = labvaluesets.LabValueSets('ValueSet','FPARhumanPapillomaVirusTests')
         self.pap = labvaluesets.LabValueSets('ValueSet','FPARpapSmearTests')
         self.preg = labvaluesets.LabValueSets('ValueSet','FPARpregnancyTests')
-        
+
         self._generate_lab_df()
 
         self.lab_dict = {}
@@ -51,7 +53,7 @@ class GenerateFparLabs(generatebase.GenerateBase):
         df = df.replace('Not detected', 'Not Detected')
         df = df.replace('Nonreactive', 'Non-reactive')
         df = df.replace('Inconclusive', 'Indeterminate') #could not find better mapping
-        df = df.replace('Equivocal', 'Indeterminate')        
+        df = df.replace('Equivocal', 'Indeterminate')
         self.lab_df = df
 
     def _generate_lab_dict(self,lab):

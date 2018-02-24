@@ -13,9 +13,10 @@ import random
 import datetime
 import calendar
 from scipy.stats import gamma
+import os
+os.chdir(os.path.dirname(os.path.realpath(__file__)))
 
-
-class GeneratePatient(generatebase.GenerateBase):   
+class GeneratePatient(generatebase.GenerateBase):
     def __init__(self):
         """Creates name, gender, birthday, address, race, ethnicity and patient's server id"""
         name_first_dict,name_last_list,street_list,state_list,zipcode_df = self._generate_patient_data()
@@ -35,15 +36,15 @@ class GeneratePatient(generatebase.GenerateBase):
         self._get_race_coding()
         self._get_ethnicity_coding()
         self.smart = self.connect2server()
-        self.id = self._generate_patient_fhir_object()      
-    
+        self.id = self._generate_patient_fhir_object()
+
     def __str__(self):
         return f'Name:{self.name_last},{self.name_first}; id:{self.id}'
-    
+
     @staticmethod
     def __repr__():
         return 'TestPatient()'
-    
+
     @staticmethod
     def _generate_patient_data():
         """Picks random patient data from multiple sources"""
@@ -51,18 +52,18 @@ class GeneratePatient(generatebase.GenerateBase):
         df = pd.read_excel('../demographic_files/common_name_first.xlsx')
         name_first_dict['male'] = df.men.tolist()
         name_first_dict['female'] = df.women.tolist()
-        
+
         name_last_list = []
         df = pd.read_excel('../demographic_files/common_name_last.xlsx')
         name_last_list = df.name_last.tolist()
-        
+
         street_list = ['Second', 'Third', 'First', 'Fourth', 'Park', 'Fifth', 'Main', 'Sixth', 'Oak', 'Seventh', 'Pine', 'Maple', 'Cedar', 'Eighth', 'Elm', 'View', 'Washington', 'Ninth', 'Lake', 'Hill']
         df = pd.read_html('https://simple.wikipedia.org/wiki/List_of_U.S._states')
         state_list = df[0][0].tolist().remove('Abbreviation')
         zipcode_df = pd.read_csv('../demographic_files/zipcodes.csv')
 
         return name_first_dict,name_last_list,street_list,state_list,zipcode_df
-    
+
     @staticmethod
     def _generate_age():
         """Generates a random age between 13 and 50 using a gamma distribution."""
@@ -73,7 +74,7 @@ class GeneratePatient(generatebase.GenerateBase):
         if int(r)<min_val or int(r)>max_val:
             r = generate_age()
         return int(r)
-    
+
     def _generate_bday(self):
         """Generates a random birthday and uses _generate_age() to determine year."""
         age = self._generate_age()
@@ -84,10 +85,10 @@ class GeneratePatient(generatebase.GenerateBase):
         day = random.choice(range(1,last_day+1))
         bday = datetime.date(year,month,day)
         return bday
-    
+
     def _get_race_coding(self):
         """Uses FHIR valueset v2 to obtain and randomly choose a race."""
-        df = pd.read_html('http://hl7.org/fhir/ValueSet/v2-0005')[2]    
+        df = pd.read_html('http://hl7.org/fhir/ValueSet/v2-0005')[2]
         df.columns = df.iloc[0,:]
         df = df.iloc[1:,0:3]
         self.race_description = random.choice(df.Description.tolist())
@@ -111,13 +112,13 @@ class GeneratePatient(generatebase.GenerateBase):
         HumanName.family = self.name_last
         HumanName.given = [self.name_first]
         Patient.name = [HumanName]
-        
+
         Patient.gender = self.gender
-        
+
         birthDay = fd.FHIRDate()
         birthDay.date = self.bday
         Patient.birthDate = birthDay
-        
+
         Address = a.Address()
         Address.country = 'USA'
         Address.postalCode = self.zipcode
@@ -128,7 +129,7 @@ class GeneratePatient(generatebase.GenerateBase):
         Address.type = 'postal'
         Patient.active = True
         Patient.address = [Address]
-        
+
         PatientCommunication = p.PatientCommunication()
         CodeableConcept = cc.CodeableConcept()
         Coding = c.Coding()
@@ -139,18 +140,18 @@ class GeneratePatient(generatebase.GenerateBase):
         PatientCommunication.language = CodeableConcept
         PatientCommunication.preferred = True
         Patient.communication = [PatientCommunication]
-        
+
         race = e.Extension()
         race.url = 'http://hl7.org/fhir/us/core/StructureDefinition/us-core-race'
         us_core = e.Extension()
-        us_core.url = 'http://hl7.org/fhir/ValueSet/v2-0005'
+        us_core.url = 'ombCategory'
         Coding = c.Coding()
-        Coding.system = self.race_system
+        Coding.system = 'urn:oid:2.16.840.1.113883.6.238'
         Coding.code = self.race_code
         Coding.display = self.race_description
         us_core.valueCoding = Coding
         race.extension = [us_core]
-        
+
         ethnicity = e.Extension()
         ethnicity.url = 'http://hl7.org/fhir/us/core/StructureDefinition/us-core-ethnicity'
         us_core = e.Extension()
@@ -163,13 +164,13 @@ class GeneratePatient(generatebase.GenerateBase):
         ethnicity.extension = [us_core]
         Patient.extension = [race,ethnicity]
 
-        # Currently the server valdiation throws a 500 error if race and ethnicity extentions are present                           
+        # Currently the server valdiation throws a 500 error if race and ethnicity extentions are present
         # self._validate(Patient)
-        
+
         self.response = Patient.create(self.smart.server)
         Patient.id = self._extract_id()
         print(f'Name:{self.name_last},{self.name_first}; id:{Patient.id}')
-        # return Patient.id  
+        # return Patient.id
         self.Patient = Patient
 
 if __name__ == '__main__':

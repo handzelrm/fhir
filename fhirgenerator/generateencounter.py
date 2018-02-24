@@ -16,6 +16,8 @@ import fhirclient.models.period as period
 import fhirclient.models.practitioner as pr
 
 import datetime
+import os
+os.chdir(os.path.dirname(os.path.realpath(__file__)))
 
 class GenerateEncounter(generatebase.GenerateBase):
 
@@ -64,15 +66,15 @@ class GenerateEncounter(generatebase.GenerateBase):
         Encounter.class_fhir = Coding
 
         Encounter.status = self.status
-        
+
         EncounterLocation = enc.EncounterLocation()
-        EncounterLocation.location = self._create_FHIRReference(self.Location)        
+        EncounterLocation.location = self._create_FHIRReference(self.Location)
         Encounter.location = [EncounterLocation]
-      
+
         Encounter.subject = self._create_FHIRReference(self.Patient)
-        
+
         EncounterDiagnosis = enc.EncounterDiagnosis()
-        EncounterDiagnosis.condition = self._create_FHIRReference(self.Condition)        
+        EncounterDiagnosis.condition = self._create_FHIRReference(self.Condition)
         Encounter.diagnosis = [EncounterDiagnosis]
 
         EncounterParticipant = enc.EncounterParticipant()

@@ -1,5 +1,7 @@
 import generatebase
 import generatepatient
+import os
+os.chdir(os.path.dirname(os.path.realpath(__file__)))
 
 
 class GenerateObservationDict(generatebase.GenerateBase):
@@ -26,7 +28,7 @@ class GenerateObservationDict(generatebase.GenerateBase):
         self.sex_12_mo = self._get_fpar_random_value('Sex Last 12 Months')
         self.contraceptive_intake = self._get_fpar_random_value('Contraceptive Method at Intake')
         self.contraceptive_exit = self._get_fpar_random_value('Contraceptive Method at Exit')
-        
+
         self.observation_dict = {
             'sbp': {'type':'quantity','loinc':'8480-6','display':'Systolic Blood Pressure (mmHg)','unit':'mmHg','value':self.sbp},
             'dbp': {'type':'quantity','loinc':'8462-4','display':'Diastolic Blood Pressure (mmHg)','unit':'mmHg','value':self.dbp},
@@ -51,20 +53,14 @@ class GenerateObservationDict(generatebase.GenerateBase):
 
         if self.contraceptive_intake == None:
             self.reason_no_contraceptive_intake = self._get_fpar_random_value('Reason for no contraceptive method at intake')
-            self.observation_dict['reason_no_contraceptive_intake'] = {'type':'codeable','loinc':'86650-9','display':'Reason for no contraceptive method at intake','value_loinc':None, 'value_display':self.reason_no_contraceptive_intake}        
+            self.observation_dict['reason_no_contraceptive_intake'] = {'type':'codeable','loinc':'86650-9','display':'Reason for no contraceptive method at intake','value_loinc':None, 'value_display':self.reason_no_contraceptive_intake}
         if self.contraceptive_exit is None:
             self.reason_no_contraceptive_exit = self._get_fpar_random_value('Reason for no contraceptive method at exit')
             self.observation_dict['reason_no_contraceptive_exit'] = {'type':'codeable','loinc':'86651-7','display':'Reason for no contraceptive method at exit','value_loinc':None, 'value_display':self.reason_no_contraceptive_exit}
-        else:    
+        else:
             self.how_contraceptive_exit = self._get_fpar_random_value('How Contraceptive Method Was Provided At Exit')
             self.observation_dict['how_contraceptive_exit'] = {'type':'codeable','loinc':'86652-5','display':'How was contraceptive method provided at exit','value_loinc':None, 'value_display':self.how_contraceptive_exit}
 
 
 if __name__ == '__main__':
     GernerateObservationDict()
-
-
-
-
-
-

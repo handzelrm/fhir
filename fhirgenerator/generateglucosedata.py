@@ -7,6 +7,8 @@ import datetime
 import random
 import calendar
 import argparse
+import os
+os.chdir(os.path.dirname(os.path.realpath(__file__)))
 
 class GenerateGlucoseData(generatebase.GenerateBase):
 
@@ -43,7 +45,7 @@ class GenerateGlucoseData(generatebase.GenerateBase):
 
         # last_day = calendar.monthrange(year,month)[1]
         # day = random.randint(1,last_day)
-        
+
         # hour = random.randint(0,23)
         # minute = random.randint(0,59)
         # second = random.randint(0,59)
