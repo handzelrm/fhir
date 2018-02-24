@@ -14,8 +14,9 @@ class GenerateLocation(generatebase.GenerateBase):
     location_city = 'Pittsburgh'
     location_postalCode = '15213'
     location_state = 'PA'
-    location_latitude = 40.437123
     location_longitude = -79.960779
+    location_latitude = 40.437123
+    
 
     def __init__(self):
         """

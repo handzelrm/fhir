@@ -144,9 +144,9 @@ class GeneratePatient(generatebase.GenerateBase):
         race = e.Extension()
         race.url = 'http://hl7.org/fhir/us/core/StructureDefinition/us-core-race'
         us_core = e.Extension()
-        us_core.url = 'http://hl7.org/fhir/ValueSet/v2-0005'
+        us_core.url = 'ombCategory'
         Coding = c.Coding()
-        Coding.system = self.race_system
+        Coding.system = 'urn:oid:2.16.840.1.113883.6.238'
         Coding.code = self.race_code
         Coding.display = self.race_description
         us_core.valueCoding = Coding
