@@ -112,28 +112,63 @@ class GenerateBase():
             Period.end = self._create_FHIRDate(end)
         return Period
 
-    # @staticmethod
+
     def _extract_id(self):
-        """Uses regex to parse out the id from the server response to posting."""
+        """Uses regex to parse out the id from the server response to posting. Current logic will not work with bundles."""
         # regex = re.compile(r'"[a-z]+/(\d+)/',re.IGNORECASE)
         regex = re.compile(r'\/(.*?)\/',re.IGNORECASE)
+        # self.response['entry']
+        # for i in range(len(self.response['entry'])):
+        #     print(json.loads(self.response)['entry'][i]['resource'])
+        # print(self.response['entry'][0]['resource']['resourceType'])
+        # print(self.response['entry'][0]['resource']['id'])
         id = regex.search(self.response['issue'][0]['diagnostics']).group(1)
+        # resource = requests.get("https://api-v5-stu3.hspconsortium.org/stu3/open/Patient").content
+        # resource = json.loads(resource)['entry'][0]['resource']
+        # print(resource)
+        # print(resource["resourceType"])
+        # returned = requests.post(f'http://api-v5-stu3.hspconsortium.org/stu3/open/{resource["resourceType"]}/$validate', data=json.dumps(resource))
+        # print(returned.text)
+        # print(self.response)
+        # id = self.response['entry'][0]['resource']['id']
         return id
 
     @staticmethod
-    def _create_FHIRCodeableConcept(code, system=None ,display=None):
-        CodeableConcept = cc.CodeableConcept()
+    def _create_FHIRCoding(code, system=None, display=None):
         Coding = c.Coding()
         Coding.code = code
         Coding.system = system
         Coding.display = display
+        return Coding
+
+    def _create_FHIRCodeableConcept(self,code, system=None ,display=None):
+        CodeableConcept = cc.CodeableConcept()
+        Coding = self._create_FHIRCoding(code,system,display)
         CodeableConcept.coding = [Coding]
         return CodeableConcept
 
     def _validate(self,resource):
-        validate = self.connect2server().server.post_json(path=f'{resource.resource_type}/$validate',resource_json=resource.as_json())
-        if validate.status_code != 200:
-            raise ValueError(f'Validation Error: {resource.resouce_type}')
+        # validate = self.connect2server().server.post_json(path=f'{resource.resource_type}/$validate',resource_json=resource.as_json())
+        # if validate.status_code != 200:
+        #     raise ValueError(f'Validation Error: {resource.resouce_type}')
+        # print(resource.resource_type)
+
+        # resource = requests.get("http://api-v5-stu3.hspconsortium.org/handzelTest/open/Patient").content
+        # print(resource)
+        # resource = json.loads(resource)['entry'][0]['resource']
+        # print(resource)
+        # returned = requests.post(f'http://api-v5-stu3.hspconsortium.org/stu3/open/{resource["resourceType"]}/$validate', data=json.dumps(resource))
+        # print(returned.text)
+        print(resource.resource_type)
+        print(resource.as_json())
+
+        returned = requests.post(f'http://api-v5-stu3.hspconsortium.org/handzelTest/open/{resource.resource_type}/$validate', data=resource.as_json())
+        print(returned.text)
+
+        # resource_2 = requests.get(f'http://api-v5-stu3.hspconsortium.org/handzelTest/open/Patient').content
+        # resource_2 = json.loads(resource_2)['entry'][0]['resource']
+        # returned = requests.post(f'http://api-v5-stu3.hspconsortium.org/handzelTest/open/{resource.resource_type}/$validate', data=json.dumps(resource_2))
+        # print(returned.text)
 
     @staticmethod
     def connect2server():
@@ -141,11 +176,11 @@ class GenerateBase():
         settings = {
             'app_id': 'hand_testing',
             'scope':'user/*.write',
-            'api_base': 'http://api-v5-stu3.hspconsortium.org/stu3/open/'
+            # 'api_base': 'http://api-v5-stu3.hspconsortium.org/stu3/open/'
             # 'api_base': 'https://api-v5-stu3.hspconsortium.org/dmDBMI/open'
             # 'api_base': 'https://api-v5-stu3.hspconsortium.org/handzelFPAR/open'
             # 'api_base': 'https://api-v5-stu3.hspconsortium.org/handzel/open'
-            # 'api_base': 'https://api-v5-stu3.hspconsortium.org/handzelTest/open'
+            'api_base': 'https://api-v5-stu3.hspconsortium.org/handzelTest/open'
         }
         smart = client.FHIRClient(settings=settings)
         smart.prepare()
