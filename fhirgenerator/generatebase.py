@@ -160,10 +160,16 @@ class GenerateBase():
         # returned = requests.post(f'http://api-v5-stu3.hspconsortium.org/stu3/open/{resource["resourceType"]}/$validate', data=json.dumps(resource))
         # print(returned.text)
         print(resource.resource_type)
-        print(resource.as_json())
+        # print(resource.as_json())
 
-        returned = requests.post(f'http://api-v5-stu3.hspconsortium.org/handzelTest/open/{resource.resource_type}/$validate', data=resource.as_json())
-        print(returned.text)
+        returned = requests.post(f'https://api-v5-stu3.hspconsortium.org/stu3/open/{resource.resource_type}/$validate', data=json.dumps(resource.as_json()))
+        print(returned)
+        # print(type(returned))
+        # print(type(returned.text))
+        print(returned.ok)
+        for issue in returned.json()['issue']:
+            print(issue['diagnostics'])
+        # print(returned.text)
 
         # resource_2 = requests.get(f'http://api-v5-stu3.hspconsortium.org/handzelTest/open/Patient').content
         # resource_2 = json.loads(resource_2)['entry'][0]['resource']
@@ -176,11 +182,11 @@ class GenerateBase():
         settings = {
             'app_id': 'hand_testing',
             'scope':'user/*.write',
-            # 'api_base': 'http://api-v5-stu3.hspconsortium.org/stu3/open/'
+            'api_base': 'https://api-v5-stu3.hspconsortium.org/stu3/open/'
             # 'api_base': 'https://api-v5-stu3.hspconsortium.org/dmDBMI/open'
             # 'api_base': 'https://api-v5-stu3.hspconsortium.org/handzelFPAR/open'
             # 'api_base': 'https://api-v5-stu3.hspconsortium.org/handzel/open'
-            'api_base': 'https://api-v5-stu3.hspconsortium.org/handzelTest/open'
+            # 'api_base': 'https://api-v5-stu3.hspconsortium.org/handzelTest/open'
         }
         smart = client.FHIRClient(settings=settings)
         smart.prepare()
