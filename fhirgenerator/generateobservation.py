@@ -10,12 +10,12 @@ import fhirclient.models.coding as c
 import fhirclient.models.observation as o
 import fhirclient.models.patient as p
 
+import json
 import datetime
 import os
 os.chdir(os.path.dirname(os.path.realpath(__file__)))
 
 class GenerateObservation(generatebase.GenerateBase):
-
 
     def __init__(self,observation_dict,dt=datetime.datetime.now(),Patient=None, Practitioner=None, Encounter=None):
         """Uses fhirclient.models to create and send vitals to server."""
@@ -70,33 +70,40 @@ class GenerateObservation(generatebase.GenerateBase):
             raise ValueError('observation_dict needs to be a dictionary of observations')
 
         for obs,value in self.observation_dict.items():
+            print(obs)
             Observation = o.Observation()
-            CodeableConcept = cc.CodeableConcept()
-            Coding = c.Coding()
-            Coding.system = 'http://loinc.org'
-            Coding.code = value['loinc']
-            Coding.display = value['display']
+            # CodeableConcept = cc.CodeableConcept()
+            # Coding = c.Coding()
+            # Coding.system = 'http://loinc.org'
+            # Coding.code = value['loinc']
+            # Coding.display = value['display']
+            # CodeableConcept.coding = [Coding]
+            # Observation.code = CodeableConcept
 
-            CodeableConcept.coding = [Coding]
-            Observation.code = CodeableConcept
+            Observation.code = self._create_FHIRCodeableConcept(code=value['code'], system=value['system'], display=value['display'])
+
+
             Observation.status = 'final'
             Observation.subject = self._create_FHIRReference(self.Patient)
             Observation.performer = [self._create_FHIRReference(self.Practitioner)]
 
 
-            if value['type'] == 'quantity':
-                Observation = self._add_quantity_value(Observation,obs)
-            elif value['type'] == 'codeable':
-                Observation = self._add_codeable_value(Observation,obs)
-            elif value['type'] == 'valuestring':
-                Observation.valueString = value['value']
-            else:
-                raise ValueError('Measurement Type ValueError')
+            # if value['type'] == 'quantity':
+            #     Observation = self._add_quantity_value(Observation,obs)
+            # elif value['type'] == 'codeable':
+            #     Observation = self._add_codeable_value(Observation,obs)
+            # elif value['type'] == 'valuestring':
+            #     Observation.valueString = value['value']
+            # else:
+            #     raise ValueError('Measurement Type ValueError')
+            Observation = self._add_value(Observation,value)
 
             Observation.effectiveDateTime = self._create_FHIRDate(self.dt)
 
             Observation.context = self._create_FHIRReference(self.Encounter)
 
+            # print(json.dumps(Observation.as_json(), indent=4))
+            # print(type(Observation.as_json()))
             self._validate(Observation)
             self.response = Observation.create(server=self.connect2server().server)
             Observation.id = self._extract_id()
