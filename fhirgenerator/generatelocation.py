@@ -16,7 +16,7 @@ class GenerateLocation(generatebase.GenerateBase):
     location_state = 'PA'
     location_longitude = -79.960779
     location_latitude = 40.437123
-    
+
 
     def __init__(self):
         """
@@ -39,10 +39,9 @@ class GenerateLocation(generatebase.GenerateBase):
         LocationPosition.longitude = self.location_longitude
         Location.position = LocationPosition
         self._validate(Location)
-        self.response = Location.create(server=self.connect2server().server)
+        self.response = Location.create(self.connect2server().server)
         Location.id = self._extract_id()
         self.Location = Location
-
-
+        
 if __name__ == '__main__':
     GenerateLocation()
