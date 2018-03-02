@@ -131,13 +131,17 @@ class GeneratePatient(generatebase.GenerateBase):
         Patient.active = True
         Patient.address = [Address]
         PatientCommunication = p.PatientCommunication()
-        PatientCommunication.language = self._create_FHIRCodeableConcept('en-US','http://hl7.org/fhir/ValueSet/languages','English')
+        PatientCommunication.language = self._create_FHIRCodeableConcept('en-US','urn:ietf:bcp:47','English')
+        # PatientCommunication.language = self._create_FHIRCodeableConcept('en-US','http://hl7.org/fhir/ValueSet/languages','English')
         PatientCommunication.preferred = True
         Patient.communication = [PatientCommunication]
 
         race = e.Extension()
         race.url = 'http://hl7.org/fhir/us/core/StructureDefinition/us-core-race'
+        # race.url = 'http://hl7.org/fhir/us/core/ValueSet/omb-race-category'
+
         us_core = e.Extension()
+        # us_core.url = 'http://hl7.org/fhir/us/core/ValueSet/omb-race-category'
         us_core.url = 'ombCategory'
         us_core.valueCoding = self._create_FHIRCoding(self.race_code,'urn:oid:2.16.840.1.113883.6.238',self.race_description)
         race_detailed = e.Extension()
