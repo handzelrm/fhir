@@ -24,6 +24,7 @@ class GenerateCondition(generatebase.GenerateBase):
 
         Condition = cond.Condition()
         Condition.clinicalStatus = 'active'
+        # Condition.verificationStatus = 'active'
         CodeableConcept = cc.CodeableConcept()
         Coding = c.Coding()
         Coding.code = self.icd_code
@@ -31,13 +32,10 @@ class GenerateCondition(generatebase.GenerateBase):
         CodeableConcept.coding = [Coding]
         Condition.code = CodeableConcept
 
-
-        # Patient_FHIRReference = fr.FHIRReference()
-        # Patient_FHIRReference.reference = f'Patient/{self.Patient.id}'
         Condition.subject = self._create_FHIRReference(self.Patient)
 
         self._validate(Condition)
-        self.response = Condition.create(server=self.connect2server().server)
+        self.response = Condition.create(self.connect2server().server)
         Condition.id = self._extract_id()
         self.Condition = Condition
         self.Condition.Patient = self.Patient
