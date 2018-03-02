@@ -97,7 +97,7 @@ class GenerateObservation(generatebase.GenerateBase):
 
             Observation.context = self._create_FHIRReference(self.Encounter)
 
-            # self._validate(Observation)
+            self._validate(Observation)
             self.response = Observation.create(server=self.connect2server().server)
             Observation.id = self._extract_id()
 
