@@ -7,6 +7,7 @@ import fhirclient.models.quantity as q
 from fhirclient import client
 from fhirclient import server
 from fhirclient import auth
+from pytz import timezone
 import json
 import pandas as pd
 import numpy as np
@@ -90,8 +91,9 @@ class GenerateBase():
         :param date: datetime object used to set the date in the FHIRDate object
         :returns: FHIRDate object
         """
+        eastern = timezone('US/Eastern')
         FHIRDate = fd.FHIRDate()
-        FHIRDate.date = date
+        FHIRDate.date = date.astimezone(eastern)
         return FHIRDate
 
     def _create_FHIRPeriod(self,start=None,end=None):
