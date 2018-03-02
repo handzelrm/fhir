@@ -27,13 +27,11 @@ class GeneratePractitioner(generatebase.GenerateBase):
         PractitionerQualification.code = CodeableConcept
         Practitioner.qualification = [PractitionerQualification]
         name = hn.HumanName()
-
         name.family, name.given, Practitioner.gender = self._generate_person()
-
         Practitioner.name = [name]
 
         self._validate(Practitioner)
-        self.response = Practitioner.create(server=self.connect2server().server)
+        self.response = Practitioner.create(self.connect2server().server)
         Practitioner.id = self._extract_id()
         self.Practitioner = Practitioner
 
