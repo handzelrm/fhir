@@ -159,16 +159,18 @@ class GenerateBase():
         # print(resource)
         # returned = requests.post(f'http://api-v5-stu3.hspconsortium.org/stu3/open/{resource["resourceType"]}/$validate', data=json.dumps(resource))
         # print(returned.text)
-        print(resource.resource_type)
+        # print(resource.resource_type)
         # print(resource.as_json())
 
         returned = requests.post(f'https://api-v5-stu3.hspconsortium.org/stu3/open/{resource.resource_type}/$validate', data=json.dumps(resource.as_json()))
-        print(returned)
+        # print(returned)
         # print(type(returned))
         # print(type(returned.text))
-        print(returned.ok)
-        for issue in returned.json()['issue']:
-            print(issue['diagnostics'])
+        # print(returned.ok)
+        # print(returned.json())
+        if not returned.ok:
+            for issue in returned.json()['issue']:
+                print(f"{issue['location'][0]}: {issue['diagnostics']}")
         # print(returned.text)
 
         # resource_2 = requests.get(f'http://api-v5-stu3.hspconsortium.org/handzelTest/open/Patient').content
