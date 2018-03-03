@@ -51,7 +51,7 @@ class GenerateObservationDict(generatebase.GenerateBase):
             # 'contraceptive_intake': {'system':'http://loinc.org','type':'codeable','code':'86649-1','display':'Contraceptive Method at Intake','value_loinc':None, 'value_display':self.contraceptive_intake},
             # 'contraceptive_exit': {'system':'http://loinc.org','type':'codeable','code':'86651-7','display':'Contraceptive at Exit','value_loinc':None, 'value_display':self.contraceptive_exit}
             }
-        self.observation_dict['smoke']['code'] = '8517006'
+        # self.observation_dict['smoke']['code'] = '8517006'
 
         # if self.contraceptive_intake == None:
         #     self.reason_no_contraceptive_intake = self._get_fpar_random_value('Reason for no contraceptive method at intake')
@@ -62,6 +62,6 @@ class GenerateObservationDict(generatebase.GenerateBase):
         # else:
         #     self.how_contraceptive_exit = self._get_fpar_random_value('How Contraceptive Method Was Provided At Exit')
         #     self.observation_dict['how_contraceptive_exit'] = {'system':'http://loinc.org','type':'codeable','code':'86652-5','display':'How was contraceptive method provided at exit','value_loinc':None, 'value_display':self.how_contraceptive_exit}
-        print(self.observation_dict['smoke']['code'])
+        # print(self.observation_dict['smoke']['code'])
 if __name__ == '__main__':
     GernerateObservationDict()
