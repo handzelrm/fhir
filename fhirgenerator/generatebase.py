@@ -311,7 +311,7 @@ class GenerateBase():
             Quantity.unit = self.observation_dict[measurement]['unit']
             Observation.valueQuantity = Quantity
         elif measurement['type'] == 'valuestring':
-            Observation.valueString = value['value']
+            Observation.valueString = measurement['value']
         return Observation
 
 
