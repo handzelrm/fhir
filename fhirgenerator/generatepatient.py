@@ -106,6 +106,7 @@ class GeneratePatient(generatebase.GenerateBase):
         df = df_omb.append(df_detailed)
         self.race_display = random.choice(df.display.tolist())
         self.race_code = df[df.display==self.race_display].code.values[0]
+        self.race_system = df[df.display==self.race_display].system.values[0]
 
     def _get_ethnicity_coding(self):
         """Uses FHIR valueset v3 to obtain and randomly choose an ethnicity"""
