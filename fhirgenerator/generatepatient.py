@@ -89,12 +89,23 @@ class GeneratePatient(generatebase.GenerateBase):
 
     def _get_race_coding(self):
         """Uses FHIR valueset v2 to obtain and randomly choose a race."""
-        df = pd.read_html('http://hl7.org/fhir/ValueSet/v2-0005')[2]
-        df.columns = df.iloc[0,:]
-        df = df.iloc[1:,0:3]
-        self.race_description = random.choice(df.Description.tolist())
-        self.race_code = df[df.Description==self.race_description].Code.values[0]
-        self.race_system = df[df.Description==self.race_description].System.values[0]
+        # df = pd.read_html('http://hl7.org/fhir/ValueSet/v2-0005')[2]
+        # df.columns = df.iloc[0,:]
+        # df = df.iloc[1:,0:3]
+        # self.race_description = random.choice(df.Description.tolist())
+        # self.race_code = df[df.Description==self.race_description].Code.values[0]
+        # self.race_system = df[df.Description==self.race_description].System.values[0]
+        df_list = pd.read_html('http://hl7.org/fhir/us/core/stu1/ValueSet-omb-race-category.html')
+        df_omb = df_list[1].iloc[1:,:2]
+        df_omb.columns = ['code', 'display']
+        df_omb['system'] = 'ombCategory'
+        df_list = pd.read_html('http://hl7.org/fhir/us/core/stu1/ValueSet-detailed-race.html')
+        df_detailed = df_list[2].iloc[-1:,:2]
+        df_detailed.columns = ['code', 'display']
+        df_detailed['system'] = 'detailed'
+        df = df_omb.append(df_detailed)
+        self.race_display = random.choice(df.display.tolist())
+        self.race_code = df[df.display==self.race_display].code.values[0]
 
     def _get_ethnicity_coding(self):
         """Uses FHIR valueset v3 to obtain and randomly choose an ethnicity"""
@@ -143,14 +154,20 @@ class GeneratePatient(generatebase.GenerateBase):
         us_core = e.Extension()
         # us_core.url = 'http://hl7.org/fhir/us/core/ValueSet/omb-race-category'
         # us_core.url = 'http://hl7.org/fhir/us/core/ValueSet/detailed-race'
-        us_core.url = 'ombCategory'
-        us_core.valueCoding = self._create_FHIRCoding(self.race_code,'urn:oid:2.16.840.1.113883.6.238',self.race_description)
+
+        # us_core.url = 'ombCategory'
+        # us_core.valueCoding = self._create_FHIRCoding(self.race_code,'urn:oid:2.16.840.1.113883.6.238',self.race_description)
+        us_core.url = self.race_system
+        us_core.valueCoding = self._create_FHIRCoding(self.race_code,'urn:oid:2.16.840.1.113883.6.238',self.race_display)
+
+
+
         # race_detailed = e.Extension()
         # race_detailed.url = 'detailed'
         # race_detailed.valueCoding = self._create_FHIRCoding(self.race_code,'urn:oid:2.16.840.1.113883.6.238',self.race_description)
         race_text = e.Extension()
         race_text.url = 'text'
-        race_text.valueString = self.race_description
+        race_text.valueString = self.race_display
         race.extension = [us_core,race_text]
 
         ethnicity = e.Extension()
