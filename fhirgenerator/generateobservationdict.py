@@ -13,7 +13,7 @@ class GenerateObservationDict(generatebase.GenerateBase):
         else:
             self.Patient = Patient
 
-        self.smoke_loinc, self.smoke_description = self._get_smoking_loinc()
+        self.smoke_code, self.smoke_description = self._get_smoking_loinc()
         self._generate_gravidity_and_parity(self.Patient)
         self.sbp, self.dbp, self.hr = self._generate_vitals()
         self.height, self.weight = self._generate_height_weight(self.Patient.gender)
@@ -35,7 +35,7 @@ class GenerateObservationDict(generatebase.GenerateBase):
             'hr': {'system':'http://loinc.org','type':'quantity','code':'8867-4','display':'Heart Rate (bpm)','unit':'bpm','value':self.hr},
             'height': {'system':'http://loinc.org','type':'quantity','code':'8302-2','display':'Height (inches)','unit':'inches','value':self.height},
             'weight': {'system':'http://loinc.org','type':'quantity','code':'29463-7','display':'Weight (pounds)','unit':'pounds','value':self.weight},
-            'smoke': {'system':'http://snomed.info/sct','type':'quantity','code':self.smoke_loinc,'display':self.smoke_description,'unit':None,'value':None}
+            'smoke': {'system':'http://loinc.org','type':'codeable_x2','code':'72166-2','display':None,'valueCode':'428071000124103','valueSystem':'http://snomed.info/sct','valueDisplay':self.smoke_description}
 
             # 'parity': {'system':'http://loinc.org','type':'quantity','code':'11977-6','display':'Parity','unit':None,'value':self.parity},
             # 'gravidity': {'system':'http://loinc.org','type':'quantity','code':'11977-6','display':f'{self.gravidity} Pregnancies','unit':'Pregnancies','value':self.gravidity},

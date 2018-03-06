@@ -171,6 +171,7 @@ class GenerateBase():
         # print(returned.ok)
         # print(returned.json())
         if not returned.ok:
+            print(returned.json()['issue'])
             for issue in returned.json()['issue']:
                 print(f"{issue['location'][0]}: {issue['diagnostics']}")
         # print(returned.text)
@@ -303,18 +304,20 @@ class GenerateBase():
         return Observation
 
     def _add_value(self,Observation,measurement):
-        if measurement['type'] == 'quantity':
+        Observation.code = self._create_FHIRCodeableConcept(code=measurement['code'], system=measurement['system'], display=measurement['display'])
+        if measurement['type'] == 'codeable':
             Observation.valueCodeableConcept = self._create_FHIRCodeableConcept(code=measurement['code'], system=measurement['system'], display=measurement['display'])
-        elif measurement['type'] == 'codeable':
+        elif measurement['type'] == 'quantity':
             Quantity = q.Quantity()
-            Quantity.value = self.observation_dict[measurement]['value']
-            Quantity.unit = self.observation_dict[measurement]['unit']
+            Quantity.value = measurement['value']
+            Quantity.unit = measurement['unit']
             Observation.valueQuantity = Quantity
         elif measurement['type'] == 'valuestring':
             Observation.valueString = measurement['value']
+        elif measurement['type'] == 'codeable_x2':
+            Observation.code = self._create_FHIRCodeableConcept(code=measurement['code'],system=measurement['system'], display=measurement['display'])
+            Observation.valueCodeableConcept = self._create_FHIRCodeableConcept(code=measurement['valueCode'],system=measurement['valueSystem'], display=measurement['valueDisplay'])
         return Observation
-
-
 
     @staticmethod
     def _generate_vitals():

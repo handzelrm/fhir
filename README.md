@@ -12,6 +12,4 @@ A series of files used for creating a patient, labs, and condition
 ## current validation errors
 ### Patient
 - The Coding provided is not in the value set http://hl7.org/fhir/us/core/ValueSet/detailed-race (http://hl7.org/fhir/us/core/ValueSet/detailed-race, and a code is required from this value set) (error message = Unknown code[2028-9] in system[urn:oid:2.16.840.1.113883.6.238])
-- Error org.hl7.fhir.dstu3.model.ValueSet cannot be cast to org.hl7.fhir.dstu3.model.CodeSystem validating CodeableConcept
-- The Coding references a value set, not a code system ("http://hl7.org/fhir/ValueSet/languages")
-- Error org.hl7.fhir.dstu3.model.ValueSet cannot be cast to org.hl7.fhir.dstu3.model.CodeSystem validating Coding
+- Code error with 2 of 8 snomed codes for smoking

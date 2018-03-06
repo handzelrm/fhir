@@ -80,8 +80,9 @@ class GenerateObservation(generatebase.GenerateBase):
             # CodeableConcept.coding = [Coding]
             # Observation.code = CodeableConcept
 
-            Observation.code = self._create_FHIRCodeableConcept(code=value['code'], system=value['system'], display=value['display'])
-
+            # Observation.code = self._create_FHIRCodeableConcept(code=value['code'], system=value['system'], display=value['display'])
+            # if value['valueCode'] is not None:
+            #     Observation.valueCodeableConcept = self._create_FHIRCodeableConcept(code=value['valueCode'], system=value['valueSystem'], display=value['valueDisplay'])
 
             Observation.status = 'final'
             Observation.subject = self._create_FHIRReference(self.Patient)

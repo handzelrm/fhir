@@ -142,15 +142,16 @@ class GeneratePatient(generatebase.GenerateBase):
 
         us_core = e.Extension()
         # us_core.url = 'http://hl7.org/fhir/us/core/ValueSet/omb-race-category'
+        # us_core.url = 'http://hl7.org/fhir/us/core/ValueSet/detailed-race'
         us_core.url = 'ombCategory'
         us_core.valueCoding = self._create_FHIRCoding(self.race_code,'urn:oid:2.16.840.1.113883.6.238',self.race_description)
-        race_detailed = e.Extension()
-        race_detailed.url = 'detailed'
-        race_detailed.valueCoding = self._create_FHIRCoding(self.race_code,'urn:oid:2.16.840.1.113883.6.238',self.race_description)
+        # race_detailed = e.Extension()
+        # race_detailed.url = 'detailed'
+        # race_detailed.valueCoding = self._create_FHIRCoding(self.race_code,'urn:oid:2.16.840.1.113883.6.238',self.race_description)
         race_text = e.Extension()
         race_text.url = 'text'
         race_text.valueString = self.race_description
-        race.extension = [us_core,race_detailed,race_text]
+        race.extension = [us_core,race_text]
 
         ethnicity = e.Extension()
         ethnicity.url = 'http://hl7.org/fhir/us/core/StructureDefinition/us-core-ethnicity'
