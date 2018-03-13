@@ -22,7 +22,11 @@ class GenerateBase():
     """Base class used to share common methods used within other generate classes"""
     @staticmethod
     def _generate_vitals():
-        """Generates a set of vitals using a normal distribution times 10"""
+        """
+        Generates a set of vitals using a normal distribution times 10
+
+        :returns: sbp, dbp, hr
+        """
         avg_sbp = 120
         avg_dbp  = 80
         diff = int(np.random.normal(0,1)*10)
@@ -36,7 +40,12 @@ class GenerateBase():
 
     @staticmethod
     def _generate_height_weight(sex):
-        """Generates height and weight roughly inline with US stats."""
+        """
+        Generates height and weight roughly inline with US stats.
+
+        :param sex: sex of person
+        :returns: height, weight
+        """
         avg_height_male = 69.2
         std_height_male = 4
         avg_height_female = 63.7
@@ -62,7 +71,11 @@ class GenerateBase():
 
     @staticmethod
     def _get_smoking_loinc():
-        """Uses a get request from LOINC to obtain a list of smoking statuses and returns a random one."""
+        """
+        Uses a get request from LOINC to obtain a list of smoking statuses and returns a random one.
+
+        :returns smoke_loinc, smoke_description
+        """
         df = pd.read_html('https://s.details.loinc.org/LOINC/72166-2.html?sections=Comprehensive')[5]
         df.columns = df.iloc[3,:]
         df = df.iloc[4:,[3,5]]
@@ -116,23 +129,14 @@ class GenerateBase():
 
 
     def _extract_id(self):
-        """Uses regex to parse out the id from the server response to posting. Current logic will not work with bundles."""
-        # regex = re.compile(r'"[a-z]+/(\d+)/',re.IGNORECASE)
+        """
+        Uses regex to parse out the id from the server response to posting. Current logic will not work with bundles.
+
+        :param self:
+        :returns: resource id type string
+        """
         regex = re.compile(r'\/(.*?)\/',re.IGNORECASE)
-        # self.response['entry']
-        # for i in range(len(self.response['entry'])):
-        #     print(json.loads(self.response)['entry'][i]['resource'])
-        # print(self.response['entry'][0]['resource']['resourceType'])
-        # print(self.response['entry'][0]['resource']['id'])
         id = regex.search(self.response['issue'][0]['diagnostics']).group(1)
-        # resource = requests.get("https://api-v5-stu3.hspconsortium.org/stu3/open/Patient").content
-        # resource = json.loads(resource)['entry'][0]['resource']
-        # print(resource)
-        # print(resource["resourceType"])
-        # returned = requests.post(f'http://api-v5-stu3.hspconsortium.org/stu3/open/{resource["resourceType"]}/$validate', data=json.dumps(resource))
-        # print(returned.text)
-        # print(self.response)
-        # id = self.response['entry'][0]['resource']['id']
         return id
 
     @staticmethod
@@ -150,42 +154,24 @@ class GenerateBase():
         return CodeableConcept
 
     def _validate(self,resource):
-        # validate = self.connect2server().server.post_json(path=f'{resource.resource_type}/$validate',resource_json=resource.as_json())
-        # if validate.status_code != 200:
-        #     raise ValueError(f'Validation Error: {resource.resouce_type}')
-        # print(resource.resource_type)
-
-        # resource = requests.get("http://api-v5-stu3.hspconsortium.org/handzelTest/open/Patient").content
-        # print(resource)
-        # resource = json.loads(resource)['entry'][0]['resource']
-        # print(resource)
-        # returned = requests.post(f'http://api-v5-stu3.hspconsortium.org/stu3/open/{resource["resourceType"]}/$validate', data=json.dumps(resource))
-        # print(returned.text)
-        # print(resource.resource_type)
-        # print(resource.as_json())
-
-        # returned = requests.post(f'https://api-v5-stu3.hspconsortium.org/stu3/open/{resource.resource_type}/$validate', data=json.dumps(resource.as_json()))
         returned = requests.post(f'http://hapi.fhir.org/baseDstu3/{resource.resource_type}/$validate', data=json.dumps(resource.as_json()))
-
-        # print(returned)
-        # print(type(returned))
-        # print(type(returned.text))
-        # print(returned.ok)
-        # print(returned.json())
+        """
+        Other Services:
+            - https://api-v5-stu3.hspconsortium.org/handzelTest/open/
+            - http://hapi.fhir.org/baseDstu3/
+        """
         if not returned.ok:
             print(returned.json()['issue'])
             for issue in returned.json()['issue']:
                 print(f"{issue['location'][0]}: {issue['diagnostics']}")
-        # print(returned.text)
-
-        # resource_2 = requests.get(f'http://api-v5-stu3.hspconsortium.org/handzelTest/open/Patient').content
-        # resource_2 = json.loads(resource_2)['entry'][0]['resource']
-        # returned = requests.post(f'http://api-v5-stu3.hspconsortium.org/handzelTest/open/{resource.resource_type}/$validate', data=json.dumps(resource_2))
-        # print(returned.text)
 
     @staticmethod
     def connect2server():
-        """Hard coded to connect to HSPC v5 server."""
+        """
+        Hard coded connection to server
+
+        :returns: smart object
+        """
         settings = {
             'app_id': 'hand_testing',
             'scope':'user/*.write',
@@ -258,7 +244,11 @@ class GenerateBase():
 
     @staticmethod
     def _generate_person():
+        """
+        Generates the attributes for a person FHIR object. Used in both Patient and Practitioner.
 
+        :returns: name_last, [name_first], gender
+        """
         name_first_dict = {}
         df = pd.read_excel('../demographic_files/common_name_first.xlsx')
         name_first_dict['male'] = df.men.tolist()
@@ -307,6 +297,14 @@ class GenerateBase():
         return Observation
 
     def _add_value(self,Observation,measurement):
+        """
+        Adds values to an Observation FHIR object. Uses 'type' within dictionary to determine logic.
+
+        :param self:
+        :param Observation: Observation FHIR object.
+        :param measurement: Specific observation measurement. References a dictionary.
+        :returns: Observation FHIR object.
+        """
         Observation.code = self._create_FHIRCodeableConcept(code=measurement['code'], system=measurement['system'], display=measurement['display'])
         if measurement['type'] == 'codeable':
             Observation.valueCodeableConcept = self._create_FHIRCodeableConcept(code=measurement['code'], system=measurement['system'], display=measurement['display'])
@@ -324,7 +322,11 @@ class GenerateBase():
 
     @staticmethod
     def _generate_vitals():
-        """Generates a set of vitals using a normal distribution times 10"""
+        """
+        Generates a set of vitals using a normal distribution times 10
+
+        :returns: sbp, dbp, hr
+        """
         avg_sbp = 120
         avg_dbp  = 80
         diff = int(np.random.normal(0,1)*10)
@@ -338,7 +340,11 @@ class GenerateBase():
 
     @staticmethod
     def _generate_height_weight(sex):
-        """Generates height and weight roughly inline with US stats."""
+        """
+        Generates height and weight roughly inline with US stats.
+
+        :returns: height, weight
+        """
         avg_height_male = 69.2
         std_height_male = 4
         avg_height_female = 63.7
@@ -364,14 +370,11 @@ class GenerateBase():
 
     @staticmethod
     def _get_smoking_loinc():
-        """Uses a get request from LOINC to obtain a list of smoking statuses and returns a random one."""
-        # df = pd.read_html('https://s.details.loinc.org/LOINC/72166-2.html?sections=Comprehensive')[5]
-        # df.columns = df.iloc[3,:]
-        # df = df.iloc[4:,[3,5]]
-        # df.columns = ['description','loinc']
-        # smoke_description = random.choice(df.description.tolist())
-        # smoke_loinc = df[df.description==smoke_description].loinc.values[0]
+        """
+        Uses a get request from LOINC to obtain a list of smoking statuses and returns a random one.
 
+        :returns: smoke_loinc, smoke_description
+        """
         df = pd.read_html('http://hl7.org/fhir/us/core/stu1/ValueSet-us-core-observation-ccdasmokingstatus.html')[1]
         headers = df.iloc[0,:2].tolist()
         df = df.iloc[1:,:2]
@@ -382,6 +385,7 @@ class GenerateBase():
         return smoke_loinc, smoke_description
 
     def _get_household_income(self):
+        """Requests values of household income and selects one at random."""
         df = pd.read_html('https://r.details.loinc.org/LOINC/77244-2.html?sections=Comprehensive')[4]
         df = df.iloc[4:,[3,5]]
         df.columns = ['income_range','answer_id']
@@ -395,7 +399,6 @@ class GenerateBase():
         df.columns = ['pregnancy_display','pregnancy_id']
         df.iloc[2,0] = 'Unknown'
         self.pregnancy_display = df[df.pregnancy_display == 'Not pregnant'].pregnancy_display.values[0]
-        #     pregnancy_display = random.choice(df.pregnancy_display.tolist())
         self.pregnancy_loinc = df[df.pregnancy_display == self.pregnancy_display].pregnancy_id.values[0]
 
     def _generate_gravidity_and_parity(self,patient):
@@ -410,6 +413,12 @@ class GenerateBase():
             self.parity = self.gravidity - random.choice(range(self.gravidity))
 
     def _get_fpar_random_value(self,item_name):
+        """
+        Used in generating fpar observations. Hardcoded to look at valuesets within file and picks at random.
+
+        :param item_name: Observation name which is determined by listing in hardcoded file.
+        :returns: random value from valueset
+        """
         df = pd.read_excel('../demographic_files/valueset.xlsx',sheet_name='Sheet1')
         df = df.fillna('N/A')
         item_value = df[df.item == item_name].valueset.tolist()
