@@ -28,6 +28,7 @@ class GenerateObservationDict(generatebase.GenerateBase):
         self.sex_12_mo = self._get_fpar_random_value('Sex Last 12 Months')
         self.contraceptive_intake = self._get_fpar_random_value('Contraceptive Method at Intake')
         self.contraceptive_exit = self._get_fpar_random_value('Contraceptive Method at Exit')
+        # '428071000124103'
 
         self.observation_dict = {
             'sbp': {'system':'http://loinc.org','type':'quantity','code':'8480-6','display':'Systolic Blood Pressure (mmHg)','unit':'mmHg','value':self.sbp},
@@ -35,7 +36,7 @@ class GenerateObservationDict(generatebase.GenerateBase):
             'hr': {'system':'http://loinc.org','type':'quantity','code':'8867-4','display':'Heart Rate (bpm)','unit':'bpm','value':self.hr},
             'height': {'system':'http://loinc.org','type':'quantity','code':'8302-2','display':'Height (inches)','unit':'inches','value':self.height},
             'weight': {'system':'http://loinc.org','type':'quantity','code':'29463-7','display':'Weight (pounds)','unit':'pounds','value':self.weight},
-            'smoke': {'system':'http://loinc.org','type':'codeable_x2','code':'72166-2','display':None,'valueCode':'428071000124103','valueSystem':'http://snomed.info/sct','valueDisplay':self.smoke_description}
+            'smoke': {'system':'http://loinc.org','type':'codeable_x2','code':'72166-2','display':None,'valueCode':self.smoke_code,'valueSystem':'http://snomed.info/sct','valueDisplay':self.smoke_description}
 
             # 'parity': {'system':'http://loinc.org','type':'quantity','code':'11977-6','display':'Parity','unit':None,'value':self.parity},
             # 'gravidity': {'system':'http://loinc.org','type':'quantity','code':'11977-6','display':f'{self.gravidity} Pregnancies','unit':'Pregnancies','value':self.gravidity},
