@@ -189,7 +189,7 @@ class GeneratePatient(generatebase.GenerateBase):
 
         self.response = Patient.create(self.smart.server)
         Patient.id = self._extract_id()
-        print(f'Name:{self.name_last},{self.name_first}; id:{Patient.id}')
+        print(f'{Patient.__class__.__name__}:{self.name_last},{self.name_first}; id: {Patient.id}')
         # return Patient.id
         self.Patient = Patient
 

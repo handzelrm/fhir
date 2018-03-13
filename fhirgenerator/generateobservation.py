@@ -70,7 +70,7 @@ class GenerateObservation(generatebase.GenerateBase):
             raise ValueError('observation_dict needs to be a dictionary of observations')
 
         for obs,value in self.observation_dict.items():
-            print(obs)
+            # print(obs)
             Observation = o.Observation()
             # CodeableConcept = cc.CodeableConcept()
             # Coding = c.Coding()
@@ -108,6 +108,7 @@ class GenerateObservation(generatebase.GenerateBase):
             self._validate(Observation)
             self.response = Observation.create(server=self.connect2server().server)
             Observation.id = self._extract_id()
+            print(f'{Observation.__class__.__name__}:{obs}; id: {Observation.id}')
 
 if __name__ == '__main__':
     obs_dict = generateobservationdict.GenerateObservationDict()

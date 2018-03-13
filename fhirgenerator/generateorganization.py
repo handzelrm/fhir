@@ -5,7 +5,6 @@ import fhirclient.models.contactpoint as cp
 import os
 os.chdir(os.path.dirname(os.path.realpath(__file__)))
 
-
 class GenerateOrganization(generatebase.GenerateBase):
 
     organization_name = 'UPMC Magee Clinic'
@@ -32,9 +31,10 @@ class GenerateOrganization(generatebase.GenerateBase):
         ContactPoint.value = self.organization_phone
         Organization.telecom = [ContactPoint]
         self._validate(Organization)
-
-
-
+        self.response = Organization.create(self.connect2server().server)
+        Organization.id = self._extract_id()
+        self.Organization = Organization
+        print(f'{Organization.__class__.__name__}:{self.organization_name}; id: {Organization.id}')
 
 if __name__ == '__main__':
     GenerateOrganization()
