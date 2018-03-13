@@ -164,7 +164,9 @@ class GenerateBase():
         # print(resource.resource_type)
         # print(resource.as_json())
 
-        returned = requests.post(f'https://api-v5-stu3.hspconsortium.org/stu3/open/{resource.resource_type}/$validate', data=json.dumps(resource.as_json()))
+        # returned = requests.post(f'https://api-v5-stu3.hspconsortium.org/stu3/open/{resource.resource_type}/$validate', data=json.dumps(resource.as_json()))
+        returned = requests.post(f'http://hapi.fhir.org/baseDstu3/{resource.resource_type}/$validate', data=json.dumps(resource.as_json()))
+
         # print(returned)
         # print(type(returned))
         # print(type(returned.text))
@@ -187,11 +189,12 @@ class GenerateBase():
         settings = {
             'app_id': 'hand_testing',
             'scope':'user/*.write',
-            'api_base': 'https://api-v5-stu3.hspconsortium.org/stu3/open/'
+            # 'api_base': 'https://api-v5-stu3.hspconsortium.org/stu3/open/'
             # 'api_base': 'https://api-v5-stu3.hspconsortium.org/dmDBMI/open'
             # 'api_base': 'https://api-v5-stu3.hspconsortium.org/handzelFPAR/open'
             # 'api_base': 'https://api-v5-stu3.hspconsortium.org/handzel/open'
             # 'api_base': 'https://api-v5-stu3.hspconsortium.org/handzelTest/open'
+            'api_base':'http://hapi.fhir.org/baseDstu3'
         }
         smart = client.FHIRClient(settings=settings)
         smart.prepare()
