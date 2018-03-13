@@ -13,10 +13,13 @@ class GenerateOrganization(generatebase.GenerateBase):
     organization_city = 'Pittsburgh'
     organization_postalCode = '15213'
     organization_state = 'PA'
-    # organization_longitude = -79.960779
-    # organization_latitude = 40.437123
 
     def __init__(self):
+        """
+        Creates, validates, and posts an Organization FHIR resource. Currently, using class variables.
+
+        :returns: practitioner id created by server
+        """
         Organization = org.Organization()
         Organization.active = True
         Organization.name = self.organization_name
@@ -34,7 +37,14 @@ class GenerateOrganization(generatebase.GenerateBase):
         self.response = Organization.create(self.connect2server().server)
         Organization.id = self._extract_id()
         self.Organization = Organization
-        print(f'{Organization.__class__.__name__}:{self.organization_name}; id: {Organization.id}')
+        print(self)
+
+    def __str__(self):
+        return f'{self.Organization.__class__.__name__}:{self.organization_name}; id: {self.Organization.id}'
+
+    @staticmethod
+    def __repr__():
+        return 'GenerateOrganization()'
 
 if __name__ == '__main__':
     GenerateOrganization()

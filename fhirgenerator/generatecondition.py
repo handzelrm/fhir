@@ -39,7 +39,14 @@ class GenerateCondition(generatebase.GenerateBase):
         Condition.id = self._extract_id()
         self.Condition = Condition
         self.Condition.Patient = self.Patient
-        print(f'{Condition.__class__.__name__}:{self.icd_description}; id: {Condition.id}')
+        print(self)
+
+    def __str__(self):
+        return f'{self.Condition.__class__.__name__}:{self.icd_description}; id: {self.Condition.id}'
+
+    @staticmethod
+    def __repr__():
+        return 'GenerateCondition()'
 
     def _generate_icd_code(self):
         df = pd.read_excel('../demographic_files/common_obgyn_visits_parsed.xlsx',sheet_name='for OPA')

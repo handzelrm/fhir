@@ -21,7 +21,6 @@ os.chdir(os.path.dirname(os.path.realpath(__file__)))
 
 class GenerateEncounter(generatebase.GenerateBase):
 
-
     def __init__(self, Patient=None, Provider=None, Location=None, Condition=None, Period=None, status='in-progress', fhir_class='outpatient'):
         """Uses fhirclient.models to create encounter resource"""
 
@@ -83,7 +82,7 @@ class GenerateEncounter(generatebase.GenerateBase):
 
         Encounter.period = self.Period
 
-        # self._validate(Encounter)
+        self._validate(Encounter)
         self.response = Encounter.create(server=self.connect2server().server)
         Encounter.id = self._extract_id()
 
@@ -93,6 +92,14 @@ class GenerateEncounter(generatebase.GenerateBase):
         self.Encounter.Location = self.Location
         self.Encounter.Period = self.Period
         self.Encounter.Practitioner = self.Practitioner
+        print(self)
+
+    def __str__(self):
+        return f'{self.Encounter.__class__.__name__}:{self.Period.start.date}; id: {self.Encounter.id}'
+
+    @staticmethod
+    def __repr__():
+        return 'GenerateEncounter()'
 
 if __name__ == '__main__':
     GenerateEncounter()

@@ -42,7 +42,14 @@ class GenerateLocation(generatebase.GenerateBase):
         self.response = Location.create(self.connect2server().server)
         Location.id = self._extract_id()
         self.Location = Location
-        print(f'{Location.__class__.__name__}:{self.location_name}; id: {Location.id}')
+        print(self)
+
+    def __str__(self):
+        return f'{self.Location.__class__.__name__}:{self.location_name}; id: {self.Location.id}'
+
+    @staticmethod
+    def __repr__():
+        return 'GenerateLocation()'
 
 if __name__ == '__main__':
     GenerateLocation()

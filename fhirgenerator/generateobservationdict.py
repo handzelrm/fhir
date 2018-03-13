@@ -7,7 +7,11 @@ os.chdir(os.path.dirname(os.path.realpath(__file__)))
 class GenerateObservationDict(generatebase.GenerateBase):
 
     def __init__(self, Patient=None):
+        """
+        Generates  self.observation_dict dictionary that will be used in the GenerateObservation module.
 
+        :param Patient: Patient FHIR object.
+        """
         if Patient == None:
             self.Patient = generatepatient.GeneratePatient().Patient
         else:
