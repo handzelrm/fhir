@@ -34,6 +34,7 @@ class GeneratePractitioner(generatebase.GenerateBase):
         self.response = Practitioner.create(self.connect2server().server)
         Practitioner.id = self._extract_id()
         self.Practitioner = Practitioner
+        print(f'{Practitioner.__class__.__name__}:{name.family},{name.given[0]}; id: {Practitioner.id}')
 
 if __name__ == '__main__':
 	GeneratePractitioner()
