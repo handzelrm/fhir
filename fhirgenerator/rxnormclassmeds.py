@@ -22,14 +22,14 @@ class RxnormClassMeds():
                 for doseform in drug_doseform:
                     drug_doseform_list.append({'doseform_name':doseform['name'], 'doseform_code':doseform['umlscui']})
                 self.drug_dict[f'{drug_name}'] = {'drug_id':drug_id, 'drug_doseforms':drug_doseform_list}
-        print(self.drug_dict)
+        # print(self.drug_dict)
 
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('-c', '--classid', help='Class id for rxnorm.', type=str)
     args = parser.parse_args()
     if args.classid is None:
-        RxnormClassMeds(classid='C07A')
+        RxnormClassMeds(classid='A10AE')
     else:
         RxnormClassMeds(classid=args.classid)
 

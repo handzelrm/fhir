@@ -62,8 +62,12 @@ class GeneratePatient(generatebase.GenerateBase):
         name_last_list = df.name_last.tolist()
 
         street_list = ['Second', 'Third', 'First', 'Fourth', 'Park', 'Fifth', 'Main', 'Sixth', 'Oak', 'Seventh', 'Pine', 'Maple', 'Cedar', 'Eighth', 'Elm', 'View', 'Washington', 'Ninth', 'Lake', 'Hill']
-        df = pd.read_html('https://simple.wikipedia.org/wiki/List_of_U.S._states')
-        state_list = df[0][0].tolist().remove('Abbreviation')
+
+        df_list = pd.read_html('https://simple.wikipedia.org/wiki/List_of_U.S._states')
+        df = df_list[0]
+        df.columns = df.iloc[0,:]
+        df = df.iloc[1:,:]
+        state_list = df.Abbreviation.tolist()
         zipcode_df = pd.read_csv('../demographic_files/zipcodes.csv')
 
         return name_first_dict,name_last_list,street_list,state_list,zipcode_df

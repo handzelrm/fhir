@@ -179,8 +179,8 @@ class GenerateBase():
             # 'api_base': 'https://api-v5-stu3.hspconsortium.org/dmDBMI/open'
             # 'api_base': 'https://api-v5-stu3.hspconsortium.org/handzelFPAR/open'
             # 'api_base': 'https://api-v5-stu3.hspconsortium.org/handzel/open'
-            # 'api_base': 'https://api-v5-stu3.hspconsortium.org/handzelTest/open'
-            'api_base':'http://hapi.fhir.org/baseDstu3'
+            'api_base': 'https://api-v5-stu3.hspconsortium.org/handzelTest/open'
+            # 'api_base':'http://hapi.fhir.org/baseDstu3'
         }
         smart = client.FHIRClient(settings=settings)
         smart.prepare()
