@@ -77,13 +77,13 @@ class GenerateGlucoseData(generatebase.GenerateBase):
         self.Encounter = generateencounter.GenerateEncounter(Period=self.Period, Patient=self.Patient).Encounter
         self.dt = self.Encounter.Period.start.date
         generateobservation.GenerateObservation(self.a1c_dict,dt=self.dt,Encounter=self.Encounter)
-        # while self.dt < datetime.datetime.now().astimezone(timezone('US/Eastern')):
-        #     generateobservation.GenerateObservation(self.glucose_dict,dt=self.dt,Encounter=self.Encounter)
-        #     self._generate_glucose()
-        #     self.glucose_dict['glucose']['value'] = self.glucose
-        #     self.dt += datetime.timedelta(hours=qxh)
-        self.Medication = generatemedication.GenerateMedication(self.long_acting_dict).Medication
-        self.MedicationAdministration = generatemedicationadministration.GenerateMedicationAdministration(Patient=self.Patient, Medication=self.Medication, Encounter=self.Encounter)
+        while self.dt < datetime.datetime.now().astimezone(timezone('US/Eastern')):
+            generateobservation.GenerateObservation(self.glucose_dict,dt=self.dt,Encounter=self.Encounter)
+            self._generate_glucose()
+            self.glucose_dict['glucose']['value'] = self.glucose
+            self.dt += datetime.timedelta(hours=qxh)
+        # self.Medication = generatemedication.GenerateMedication(self.long_acting_dict).Medication
+        # self.MedicationAdministration = generatemedicationadministration.GenerateMedicationAdministration(Patient=self.Patient, Medication=self.Medication, Encounter=self.Encounter)
 
 
 def main():
